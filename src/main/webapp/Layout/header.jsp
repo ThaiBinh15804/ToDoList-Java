@@ -19,7 +19,7 @@
     <div class="header-left">
         <h1><%= pageTitle %></h2>
     </div>
-    <div>
+    <div class="header-middle">
         <form class="form-container" action="#" method="POST">
               <input type="text" class="form-input" placeholder="Nhập nội dung tìm kiếm..." name="userInput" />
               <button type="submit" class="form-button">

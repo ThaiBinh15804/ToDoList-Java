@@ -48,6 +48,7 @@ public class DAO {
                 user.email = rs.getString("email");
                 user.fullname = rs.getString("fullname");
                 user.phone = rs.getString("phone");
+                user.avatar = rs.getString("avatar");
                 user.created_at = rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null;
                 user.updated_at = rs.getTimestamp("updated_at") != null ? rs.getTimestamp("updated_at").toLocalDateTime() : null;
                 users.add(user);
@@ -73,6 +74,7 @@ public class DAO {
                     user.email = rs.getString("email");
                     user.fullname = rs.getString("fullname");
                     user.phone = rs.getString("phone");
+                    user.avatar = rs.getString("avatar");
                     user.created_at = rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null;
                     user.updated_at = rs.getTimestamp("updated_at") != null ? rs.getTimestamp("updated_at").toLocalDateTime() : null;
                 }
@@ -85,7 +87,7 @@ public class DAO {
 
     // Update: Update user information
     public void updateUser(User user) {
-        String query = "UPDATE users SET username = ?, password = ?, email = ?, fullname = ?, phone = ?, updated_at = ? WHERE user_id = ?";
+        String query = "UPDATE users SET username = ?, password = ?, email = ?, fullname = ?, phone = ?, updated_at = ?, avatar = ? WHERE user_id = ?";
         try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(query)) {
             stmt.setString(1, user.username);
             stmt.setString(2, user.password);
@@ -93,7 +95,8 @@ public class DAO {
             stmt.setString(4, user.fullname);
             stmt.setString(5, user.phone);
             stmt.setTimestamp(6, java.sql.Timestamp.valueOf(LocalDateTime.now()));
-            stmt.setString(7, user.user_id);
+            stmt.setString(7, user.avatar);
+            stmt.setString(8, user.user_id);
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -327,11 +330,12 @@ public class DAO {
     }
 
     // Read: Get tasks with category names (joined query)
-    public List<TaskWithCategory> getTasksWithCategoryNames() {
+    public List<TaskWithCategory> getTasksWithCategoryNames(String user_id) {
         List<TaskWithCategory> tasksWithCategories = new ArrayList<>();
-        String query = "SELECT t.*, c.name AS category_name FROM tasks t LEFT JOIN categories c ON t.category_id = c.category_id";
-        try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
+        String query = "SELECT t.*, c.name AS category_name FROM tasks t LEFT JOIN categories c ON t.category_id = c.category_id WHERE t.user_id = ?";
+        try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(query)) {
+            stmt.setString(1, user_id);
+            ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 Task task = new Task();
                 task.task_id = rs.getString("task_id");

@@ -1,5 +1,6 @@
-package com.example;
+package com.example.servlet;
 
+import com.example.DAO;
 import com.google.gson.Gson;
 
 import javax.servlet.ServletException;
@@ -8,9 +9,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import com.example.model.*;
+
 
 @WebServlet("/getEvents")
 public class EventServlet extends HttpServlet {
@@ -35,7 +37,7 @@ public class EventServlet extends HttpServlet {
 //                return;
 //            }
 
-            List<model.Task> tasks = dao.getTasksByUser(userId);
+            List<Task> tasks = dao.getTasksByUser(userId);
             if (tasks == null || tasks.isEmpty()) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 response.getWriter().write("{\"error\":\"No tasks found for user " + userId + "\"}");
@@ -44,7 +46,7 @@ public class EventServlet extends HttpServlet {
 
             List<Event> events = new ArrayList<>();
 
-            for (model.Task task : tasks) {
+            for (Task task : tasks) {
                 if (task.start_time != null && task.end_time != null) {
                     Event event = new Event();
                     event.title = task.title;

@@ -1,10 +1,12 @@
 package com.example;
 
+
+import com.example.model.*;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.*;
-import com.example.model.*;
 
 public class DAO {
     public DBConnect dbConnect;
@@ -16,7 +18,7 @@ public class DAO {
     // --- User CRUD Operations ---
 
     // Create: Insert a new user
-    public void insertUser(model.User user) {
+    public void insertUser(User user) {
         String query = "INSERT INTO users (user_id, username, password, email, fullname, phone, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(query)) {
             stmt.setString(1, user.user_id);
@@ -33,13 +35,13 @@ public class DAO {
     }
 
     // Read: Get all users
-    public List<model.User> getAllUsers() {
-        List<model.User> users = new ArrayList<>();
+    public List<User> getAllUsers() {
+        List<User> users = new ArrayList<>();
         String query = "SELECT * FROM users";
         try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-                model.User user = new model.User();
+                User user = new User();
                 user.user_id = rs.getString("user_id");
                 user.username = rs.getString("username");
                 user.password = rs.getString("password");
@@ -57,14 +59,14 @@ public class DAO {
     }
 
     // Read: Get user by ID
-    public model.User getUserById(String user_id) {
-        model.User user = null;
+    public User getUserById(String user_id) {
+        User user = null;
         String query = "SELECT * FROM users WHERE user_id = ?";
         try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(query)) {
             stmt.setString(1, user_id);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    user = new model.User();
+                    user = new User();
                     user.user_id = rs.getString("user_id");
                     user.username = rs.getString("username");
                     user.password = rs.getString("password");
@@ -82,7 +84,7 @@ public class DAO {
     }
 
     // Update: Update user information
-    public void updateUser(model.User user) {
+    public void updateUser(User user) {
         String query = "UPDATE users SET username = ?, password = ?, email = ?, fullname = ?, phone = ?, updated_at = ? WHERE user_id = ?";
         try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(query)) {
             stmt.setString(1, user.username);
@@ -112,7 +114,7 @@ public class DAO {
     // --- Category CRUD Operations ---
 
     // Create: Insert a new category
-    public void insertCategory(model.Category category) {
+    public void insertCategory(Category category) {
         String query = "INSERT INTO categories (category_id, user_id, name) VALUES (?, ?, ?)";
         try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(query)) {
             stmt.setString(1, category.category_id);
@@ -125,13 +127,13 @@ public class DAO {
     }
 
     // Read: Get all categories
-    public List<model.Category> getAllCategories() {
-        List<model.Category> categories = new ArrayList<>();
+    public List<Category> getAllCategories() {
+        List<Category> categories = new ArrayList<>();
         String query = "SELECT * FROM categories";
         try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-                model.Category category = new model.Category();
+                Category category = new Category();
                 category.category_id = rs.getString("category_id");
                 category.user_id = rs.getString("user_id");
                 category.name = rs.getString("name");
@@ -144,14 +146,14 @@ public class DAO {
     }
 
     // Read: Get category by ID
-    public model.Category getCategoryById(String category_id) {
-        model.Category category = null;
+    public Category getCategoryById(String category_id) {
+        Category category = null;
         String query = "SELECT * FROM categories WHERE category_id = ?";
         try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(query)) {
             stmt.setString(1, category_id);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    category = new model.Category();
+                    category = new Category();
                     category.category_id = rs.getString("category_id");
                     category.user_id = rs.getString("user_id");
                     category.name = rs.getString("name");
@@ -164,7 +166,7 @@ public class DAO {
     }
 
     // Update: Update category information
-    public void updateCategory(model.Category category) {
+    public void updateCategory(Category category) {
         String query = "UPDATE categories SET user_id = ?, name = ? WHERE category_id = ?";
         try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(query)) {
             stmt.setString(1, category.user_id);
@@ -190,7 +192,7 @@ public class DAO {
     // --- Task CRUD Operations ---
 
     // Create: Insert a new task
-    public void insertTask(model.Task task) {
+    public void insertTask(Task task) {
         String query = "INSERT INTO tasks (task_id, user_id, category_id, title, description, status, priority, start_time, end_time, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(query)) {
             stmt.setString(1, task.task_id);
@@ -210,13 +212,13 @@ public class DAO {
     }
 
     // Read: Get all tasks
-    public List<model.Task> getAllTasks() {
-        List<model.Task> tasks = new ArrayList<>();
+    public List<Task> getAllTasks() {
+        List<Task> tasks = new ArrayList<>();
         String query = "SELECT * FROM tasks";
         try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-                model.Task task = new model.Task();
+                Task task = new Task();
                 task.task_id = rs.getString("task_id");
                 task.user_id = rs.getString("user_id");
                 task.category_id = rs.getString("category_id");
@@ -237,14 +239,14 @@ public class DAO {
     }
 
     // Read: Get task by ID
-    public model.Task getTaskById(String task_id) {
-        model.Task task = null;
+    public Task getTaskById(String task_id) {
+        Task task = null;
         String query = "SELECT * FROM tasks WHERE task_id = ?";
         try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(query)) {
             stmt.setString(1, task_id);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    task = new model.Task();
+                    task = new Task();
                     task.task_id = rs.getString("task_id");
                     task.user_id = rs.getString("user_id");
                     task.category_id = rs.getString("category_id");
@@ -265,14 +267,14 @@ public class DAO {
     }
 
     //Read: Get task by user
-    public List<model.Task> getTasksByUser(String user_id) {
-        List<model.Task> tasks = new ArrayList<>();
+    public List<Task> getTasksByUser(String user_id) {
+        List<Task> tasks = new ArrayList<>();
         String query = "SELECT * FROM tasks WHERE user_id = ?";
         try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(query)) {
             stmt.setString(1, user_id);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    model.Task task = new model.Task();
+                    Task task = new Task();
                     task.task_id = rs.getString("task_id");
                     task.user_id = rs.getString("user_id");
                     task.category_id = rs.getString("category_id");
@@ -294,7 +296,7 @@ public class DAO {
     }
 
     // Update: Update task information
-    public void updateTask(model.Task task) {
+    public void updateTask(Task task) {
         String query = "UPDATE tasks SET user_id = ?, category_id = ?, title = ?, description = ?, status = ?, priority = ?, start_time = ?, end_time = ?, updated_at = ? WHERE task_id = ?";
         try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(query)) {
             stmt.setString(1, task.user_id);
@@ -325,13 +327,13 @@ public class DAO {
     }
 
     // Read: Get tasks with category names (joined query)
-    public List<model.TaskWithCategory> getTasksWithCategoryNames() {
-        List<model.TaskWithCategory> tasksWithCategories = new ArrayList<>();
+    public List<TaskWithCategory> getTasksWithCategoryNames() {
+        List<TaskWithCategory> tasksWithCategories = new ArrayList<>();
         String query = "SELECT t.*, c.name AS category_name FROM tasks t LEFT JOIN categories c ON t.category_id = c.category_id";
         try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-                model.Task task = new model.Task();
+                Task task = new Task();
                 task.task_id = rs.getString("task_id");
                 task.user_id = rs.getString("user_id");
                 task.category_id = rs.getString("category_id");
@@ -344,7 +346,7 @@ public class DAO {
                 task.created_at = rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null;
                 task.updated_at = rs.getTimestamp("updated_at") != null ? rs.getTimestamp("updated_at").toLocalDateTime() : null;
 
-                model.TaskWithCategory taskWithCategory = new model.TaskWithCategory();
+                TaskWithCategory taskWithCategory = new TaskWithCategory();
                 taskWithCategory.task = task;
                 taskWithCategory.category_name = rs.getString("category_name");
                 tasksWithCategories.add(taskWithCategory);

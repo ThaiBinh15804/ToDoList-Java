@@ -3,6 +3,7 @@ package com.example;
 import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.util.List;
+import com.example.model.*;
 
 public class DatabaseTest {
     public static void main(String[] args) {
@@ -25,7 +26,7 @@ public class DatabaseTest {
 
         // Test 2: Insert a new user
         System.out.println("\n=== Test 2: Inserting a New User ===");
-        model.User newUser = new model.User();
+        User newUser = new User();
         newUser.user_id = "U004";
         newUser.username = "phamthid";
         newUser.password = "zxcv123@";
@@ -38,14 +39,14 @@ public class DatabaseTest {
 
         // Test 3: Retrieve and display all users
         System.out.println("\n=== Test 3: Retrieving All Users ===");
-        List<model.User> users = dao.getAllUsers();
-        for (model.User user : users) {
+        List<User> users = dao.getAllUsers();
+        for (User user : users) {
             System.out.println("User ID: " + user.user_id + ", Username: " + user.username + ", Email: " + user.email);
         }
 
         // Test 4: Update a user
         System.out.println("\n=== Test 4: Updating a User ===");
-        model.User userToUpdate = dao.getUserById("U004");
+        User userToUpdate = dao.getUserById("U004");
         if (userToUpdate != null) {
             userToUpdate.fullname = "Phạm Thị Đ";
             userToUpdate.phone = "0945678901";
@@ -57,7 +58,7 @@ public class DatabaseTest {
 
         // Test 5: Insert a new category
         System.out.println("\n=== Test 5: Inserting a New Category ===");
-        model.Category newCategory = new model.Category();
+        Category newCategory = new Category();
         newCategory.category_id = "C005";
         newCategory.user_id = "U004";
         newCategory.name = "Gia đình";
@@ -66,14 +67,14 @@ public class DatabaseTest {
 
         // Test 6: Retrieve and display all categories
         System.out.println("\n=== Test 6: Retrieving All Categories ===");
-        List<model.Category> categories = dao.getAllCategories();
-        for (model.Category category : categories) {
+        List<Category> categories = dao.getAllCategories();
+        for (Category category : categories) {
             System.out.println("Category ID: " + category.category_id + ", Name: " + category.name + ", User ID: " + category.user_id);
         }
 
         // Test 7: Insert a new task
         System.out.println("\n=== Test 7: Inserting a New Task ===");
-        model.Task newTask = new model.Task();
+        Task newTask = new Task();
         newTask.task_id = "T007";
         newTask.user_id = "U004";
         newTask.category_id = "C005";
@@ -87,15 +88,15 @@ public class DatabaseTest {
 
         // Test 8: Retrieve and display all tasks
         System.out.println("\n=== Test 8: Retrieving All Tasks ===");
-        List<model.Task> tasks = dao.getAllTasks();
-        for (model.Task task : tasks) {
+        List<Task> tasks = dao.getAllTasks();
+        for (Task task : tasks) {
             System.out.println("Task ID: " + task.task_id + ", Title: " + task.title + ", Status: " + task.status);
         }
 
         // Test 9: Retrieve and display tasks with category names
         System.out.println("\n=== Test 9: Retrieving Tasks with Category Names ===");
-        List<model.TaskWithCategory> tasksWithCategories = dao.getTasksWithCategoryNames();
-        for (model.TaskWithCategory twc : tasksWithCategories) {
+        List<TaskWithCategory> tasksWithCategories = dao.getTasksWithCategoryNames();
+        for (TaskWithCategory twc : tasksWithCategories) {
             System.out.println("Task ID: " + twc.task.task_id + ", Title: " + twc.task.title + ", Category: " + (twc.category_name != null ? twc.category_name : "None"));
         }
 
@@ -117,8 +118,8 @@ public class DatabaseTest {
         // Test 13: Get tasks by user
         System.out.println("\n=== Test 13: Get task by User ===");
         System.out.println();
-        List<model.Task> tasksWithUser = dao.getTasksByUser("U001");
-        for (model.Task twc : tasksWithUser) {
+        List<Task> tasksWithUser = dao.getTasksByUser("U001");
+        for (Task twc : tasksWithUser) {
             System.out.println("Task ID: " + twc.task_id + ", Title: " + twc.title + ", Category: " );
         }
 

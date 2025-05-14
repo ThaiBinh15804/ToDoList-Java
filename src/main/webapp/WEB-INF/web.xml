@@ -2,13 +2,6 @@
 <web-app
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         version="4.0">
-    <servlet>
-        <servlet-name>LoginServlet</servlet-name>
-        <servlet-class>com.example.LoginServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>LoginServlet</servlet-name>
-        <url-pattern>/login</url-pattern>
-        <url-pattern>/logout</url-pattern>
-    </servlet-mapping>
+
+
 </web-app>

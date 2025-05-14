@@ -36,3 +36,29 @@ build/
 
 ### Mac OS ###
 .DS_Store
+/logs/catalina.2025-05-14.log
+/conf/catalina.policy
+/conf/catalina.properties
+/conf/context.xml
+/work/Catalina/localhost/ToDoList/org/apache/jsp/Pages/DashBoard/DashBoard_jsp.class
+/work/Catalina/localhost/ToDoList/org/apache/jsp/Pages/DashBoard/DashBoard_jsp.java
+/work/Catalina/localhost/ToDoList/org/apache/jsp/Layout/header_jsp.class
+/work/Catalina/localhost/ToDoList/org/apache/jsp/Layout/header_jsp.java
+/logs/host-manager.2025-05-14.log
+/work/Catalina/localhost/ToDoList/org/apache/jsp/index_jsp.class
+/work/Catalina/localhost/ToDoList/org/apache/jsp/index_jsp.java
+/conf/jaspic-providers.xml
+/conf/jaspic-providers.xsd
+/logs/localhost.2025-05-14.log
+/logs/localhost_access_log.2025-05-14.txt
+/conf/logging.properties
+/work/Catalina/localhost/ToDoList/org/apache/jsp/Layout/main_005flayout_jsp.class
+/work/Catalina/localhost/ToDoList/org/apache/jsp/Layout/main_005flayout_jsp.java
+/logs/manager.2025-05-14.log
+/conf/server.xml
+/work/Catalina/localhost/ROOT/SESSIONS.ser
+/work/Catalina/localhost/ToDoList/SESSIONS.ser
+/conf/Catalina/localhost/ToDoList.xml
+/conf/tomcat-users.xml
+/conf/tomcat-users.xsd
+/conf/web.xml

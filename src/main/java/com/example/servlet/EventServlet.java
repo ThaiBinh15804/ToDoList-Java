@@ -37,7 +37,7 @@ public class EventServlet extends HttpServlet {
 //                return;
 //            }
 
-            List<Task> tasks = dao.getTasksByUser(userId);
+            List<TaskWithCategory> tasks = dao.getTasksWithCategoryNames(userId);
             if (tasks == null || tasks.isEmpty()) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 response.getWriter().write("{\"error\":\"No tasks found for user " + userId + "\"}");
@@ -46,12 +46,18 @@ public class EventServlet extends HttpServlet {
 
             List<Event> events = new ArrayList<>();
 
-            for (Task task : tasks) {
+            for (TaskWithCategory taskWithCategory : tasks) {
+                Task task = taskWithCategory.task;
                 if (task.start_time != null && task.end_time != null) {
                     Event event = new Event();
-                    event.title = task.title;
+                    event.id = task.task_id;
+                    event.title = task.title + (taskWithCategory.category_name != null ? " (" + taskWithCategory.category_name + ")" : "");
                     event.start = task.start_time.toString();
                     event.end = task.end_time.toString();
+                    event.category_name = taskWithCategory.category_name != null ? taskWithCategory.category_name : "No Category";
+                    event.status = task.status != null ? task.status : "Unknown";
+                    event.priority = task.priority != null ? task.priority : "None";
+                    event.description = task.description != null ? task.description : "";
                     events.add(event);
                 }
             }
@@ -74,8 +80,13 @@ public class EventServlet extends HttpServlet {
     }
 
     private static class Event {
+        public String id;
         public String title;
         public String start;
         public String end;
+        public String category_name;
+        public String status;
+        public String priority;
+        public String description;
     }
 }

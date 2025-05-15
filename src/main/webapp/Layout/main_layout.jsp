@@ -77,6 +77,12 @@
                 <% } %>
             </div>
         </div>
+        <div style="position: fixed; bottom: 0; left: 0; padding: 8px;">
+            <a href="<%= contextPath %>/logout" style="display: flex; align-items: center; background-color: #1e3a8a; color: white; padding: 8px 12px; text-decoration: none; border-radius: 4px;">
+                <img src="<%= contextPath %>/Assets/Khanh/images/logout.svg" alt="Logout Icon" style="width: 30px; height: 30px; margin-right: 8px;">
+                Logout
+            </a>
+        </div>
     </div>
 </body>
 </html>

@@ -1,5 +1,10 @@
 package com.example;
 
+import com.example.model.Category;
+import com.example.model.Task;
+import com.example.model.TaskWithCategory;
+import com.example.model.User;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

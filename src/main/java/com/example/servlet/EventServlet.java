@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,17 +31,19 @@ public class EventServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
 
         try {
-            String userId = "U001";
-//            if (userId == null) {
-//                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//                response.getWriter().write("{\"error\":\"User not authenticated\"}");
-//                return;
-//            }
+            HttpSession session = request.getSession(false);
+            if (session == null) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("{\"error\":\"User not authenticated\"}");
+                return;
+            }
 
-            List<TaskWithCategory> tasks = dao.getTasksWithCategoryNames(userId);
+            User user = (User) session.getAttribute("user");
+
+            List<TaskWithCategory> tasks = dao.getTasksWithCategoryNames(user.user_id);
             if (tasks == null || tasks.isEmpty()) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                response.getWriter().write("{\"error\":\"No tasks found for user " + userId + "\"}");
+                response.getWriter().write("{\"message\":\"Hiện tại bạn chưa có công việc nào.\"}");
                 return;
             }
 

@@ -332,8 +332,15 @@
                     })
                     .then(response => {
                         if (!response.ok) {
-                            return response.json().then(err => {
-                                throw new Error(`HTTP ${response.status}: ${err.error || 'Unknown error'}`);
+                            return response.json().then(data => {
+                                if (response.status === 401) {
+                                    alert('Bạn chưa đăng nhập. Vui lòng đăng nhập lại.');
+                                    window.location.href = '/ToDoList/Pages/Login/Login.jsp';
+                                } else if (response.status === 404 && data.message) {
+                                    alert(data.message);
+                                    successCallback([]);
+                                    return;
+                                }
                             });
                         }
                         return response.json();

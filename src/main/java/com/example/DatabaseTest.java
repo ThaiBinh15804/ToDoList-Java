@@ -1,5 +1,10 @@
 package com.example;
 
+import com.example.model.Category;
+import com.example.model.Task;
+import com.example.model.TaskWithCategory;
+import com.example.model.User;
+
 import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,7 +18,7 @@ public class DatabaseTest {
         // Test 1: Verify database connection
         System.out.println("=== Test 1: Verifying Database Connection ===");
         try {
-            if (dao.dbConnect != null) {
+            if (dao.dbConnect.getConnection() != null) {
                 System.out.println("Database connection successful!");
             } else {
                 System.out.println("Database connection failed!");

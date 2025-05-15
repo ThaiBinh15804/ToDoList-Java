@@ -11,14 +11,4 @@
         <url-pattern>/login</url-pattern>
         <url-pattern>/logout</url-pattern>
     </servlet-mapping>
-
-<!--    <servlet>-->
-<!--        <servlet-name>MyTaskServlet</servlet-name>-->
-<!--        <servlet-class>com.example.servlet.MyTaskServlet</servlet-class>-->
-<!--    </servlet>-->
-
-<!--    <servlet-mapping>-->
-<!--        <servlet-name>MyTaskServlet</servlet-name>-->
-<!--        <url-pattern>/GetTaskById</url-pattern>-->
-<!--    </servlet-mapping>-->
 </web-app>

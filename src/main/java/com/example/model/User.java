@@ -9,6 +9,7 @@ public class User {
     public String email;
     public String fullname;
     public String phone;
+    public String avatar;
     public LocalDateTime created_at;
     public LocalDateTime updated_at;
 }

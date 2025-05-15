@@ -1,7 +1,5 @@
 package com.example;
-
-import com.example.model.Task;
-
+import com.example.model.TaskWithCategory;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -41,7 +39,7 @@ import java.util.List;
                 case "/MyTask":
                 default:
                     contentPage = "/Pages/MyTask/MyTask.jsp";
-                    List<Task> taskList = taskDAO.getAllTasks();
+                    List<TaskWithCategory> taskList = taskDAO.getTasksWithCategoryNames("U001");
                     request.setAttribute("tasks", taskList);
                     break;
             }

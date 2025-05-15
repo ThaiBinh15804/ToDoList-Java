@@ -99,7 +99,7 @@ public class DatabaseTest {
 
         // Test 9: Retrieve and display tasks with category names
         System.out.println("\n=== Test 9: Retrieving Tasks with Category Names ===");
-        List<TaskWithCategory> tasksWithCategories = dao.getTasksWithCategoryNames();
+        List<TaskWithCategory> tasksWithCategories = dao.getTasksWithCategoryNames("U001");
         for (TaskWithCategory twc : tasksWithCategories) {
             System.out.println("Task ID: " + twc.task.task_id + ", Title: " + twc.task.title + ", Category: " + (twc.category_name != null ? twc.category_name : "None"));
         }

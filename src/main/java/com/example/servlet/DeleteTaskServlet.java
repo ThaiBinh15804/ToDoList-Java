@@ -23,7 +23,5 @@ public class DeleteTaskServlet extends HttpServlet {
         String taskId = json.get("task_id").getAsString();
 
         dao.deleteTask(taskId);
-
-        response.getWriter().write("{\"message\": \"Xóa thành công\"}");
     }
 }

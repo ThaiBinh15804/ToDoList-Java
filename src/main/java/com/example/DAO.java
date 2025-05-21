@@ -118,15 +118,34 @@ public class DAO {
     }
 
     // --- Category CRUD Operations ---
-
-    // Create: Insert a new category
     public void insertCategory(Category category) {
-        String query = "INSERT INTO categories (category_id, user_id, name) VALUES (?, ?, ?)";
-        try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(query)) {
-            stmt.setString(1, category.category_id);
-            stmt.setString(2, category.user_id);
-            stmt.setString(3, category.name);
-            stmt.executeUpdate();
+        String selectLastIdQuery = "SELECT TOP 1 category_id FROM categories WITH (UPDLOCK, HOLDLOCK) ORDER BY CAST(SUBSTRING(category_id, 2, LEN(category_id) - 1) AS INT) DESC";
+        String insertQuery = "INSERT INTO categories (category_id, user_id, name) VALUES (?, ?, ?)";
+
+        try (Connection conn = dbConnect.getConnection()) {
+            conn.setAutoCommit(false); // Bắt đầu transaction
+
+            String newCategoryId = "C001"; // Mặc định nếu chưa có bản ghi nào
+            try (PreparedStatement selectStmt = conn.prepareStatement(selectLastIdQuery)) {
+                ResultSet rs = selectStmt.executeQuery();
+                if (rs.next()) {
+                    String lastId = rs.getString("category_id"); // Ví dụ: "C007"
+                    int number = Integer.parseInt(lastId.substring(1));
+                    newCategoryId = String.format("C%03d", number + 1); // => "C008"
+                }
+            }
+
+            try (PreparedStatement insertStmt = conn.prepareStatement(insertQuery)) {
+                insertStmt.setString(1, newCategoryId);
+                insertStmt.setString(2, category.user_id);
+                insertStmt.setString(3, category.name);
+
+                int rowsInserted = insertStmt.executeUpdate();
+                System.out.println("Rows inserted: " + rowsInserted);
+            }
+
+            conn.commit(); // Hoàn tất transaction
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -206,6 +225,38 @@ public class DAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean isCategoryNameExistsForOther(String name, String userId) {
+        String query = "SELECT COUNT(*) FROM categories WHERE name = ? AND user_id = ? ";
+        try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(query)) {
+            stmt.setString(1, name);
+            stmt.setString(2, userId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                return count > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean isCategoryInUseTask(String categoryId, String userId) {
+        String query = "SELECT COUNT(*) FROM tasks WHERE category_id = ? AND user_id = ? ";
+        try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(query)) {
+            stmt.setString(1, categoryId);
+            stmt.setString(2, userId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                return count > 0; // nếu có ít nhất 1 task dùng category này
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     // Delete: Delete a category
@@ -328,14 +379,13 @@ public class DAO {
     }
 
     public void insertTask2(Task task) {
-        String selectLastIdQuery = "SELECT TOP 1 task_id FROM tasks WITH (UPDLOCK, HOLDLOCK) WHERE user_id = ? ORDER BY CAST(SUBSTRING(task_id, 2, LEN(task_id) - 1) AS INT) DESC";
+        String selectLastIdQuery = "SELECT TOP 1 task_id FROM tasks WITH (UPDLOCK, HOLDLOCK) ORDER BY CAST(SUBSTRING(task_id, 2, LEN(task_id) - 1) AS INT) DESC";
         String insertQuery = "INSERT INTO tasks (task_id, user_id, category_id, title, description, status, priority, start_time, end_time, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = dbConnect.getConnection()) {
             conn.setAutoCommit(false); // bắt đầu transaction
             String newTaskId = "T001"; // Mặc định nếu chưa có task nào
             try (PreparedStatement selectStmt = conn.prepareStatement(selectLastIdQuery)) {
-                selectStmt.setString(1, task.user_id);
                 ResultSet rs = selectStmt.executeQuery();
                 if (rs.next()) {
                     String lastTaskId = rs.getString("task_id");

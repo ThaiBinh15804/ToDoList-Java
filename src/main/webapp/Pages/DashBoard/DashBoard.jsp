@@ -36,7 +36,7 @@
           <span style="font-size: 14px; color: #8d99ae">Hôm nay</span>
         </div>
 
-        <div style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); margin-top: 10px; padding: 12px; border-radius: 10px; background-color: #C4D0EB">
+        <div style="box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); margin-top: 10px; padding: 12px; border-radius: 10px; background-color: #C4D0EB">
                     <%
                       if (taskWithCategoryList == null || taskWithCategoryList.isEmpty()) {
                     %>
@@ -96,7 +96,7 @@
 
     <!-- Cột 2: Trạng thái công việc -->
     <div>
-      <div style="width: 100%; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); border-radius: 12px; padding: 0px 14px 10px;">
+      <div style="width: 100%; border: 1px solid #dadada; box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); border-radius: 12px; padding: 0px 14px 10px;">
         <div style="display: flex; align-items: center; column-gap: 8px;">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-line-icon lucide-chart-line"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/></svg>
           <h2 style="color: red; font-size: 15px; font-weight: 500;">Trạng thái công việc</h2>
@@ -118,7 +118,7 @@
         </div>
       </div>
 
-      <div style="margin-top: 20px; width: 100%; border: 1px solid #dadada; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); border-radius: 12px; padding: 16px 20px;">
+      <div style="margin-top: 20px; width: 100%; border: 1px solid #dadada; box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); border-radius: 12px; padding: 16px 20px;">
               <div style="display: flex; align-items: center; column-gap: 8px;">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="green" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-check-big-icon lucide-circle-check-big"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
                 <h2 style="color: red; font-size: 15px; font-weight: 500;">Công việc đã hoàn thành</h2>

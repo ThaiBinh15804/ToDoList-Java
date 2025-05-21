@@ -62,3 +62,7 @@ build/
 /conf/tomcat-users.xml
 /conf/tomcat-users.xsd
 /conf/web.xml
+/work/Catalina/localhost/ToDoList/org/apache/jsp/Pages/Calendar/Calendar_jsp.class
+/work/Catalina/localhost/ToDoList/org/apache/jsp/Pages/Calendar/Calendar_jsp.java
+/work/Catalina/localhost/ToDoList/org/apache/jsp/Pages/MyTask/MyTask_jsp.class
+/work/Catalina/localhost/ToDoList/org/apache/jsp/Pages/MyTask/MyTask_jsp.java

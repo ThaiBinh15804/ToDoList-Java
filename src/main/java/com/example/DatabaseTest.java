@@ -8,6 +8,7 @@ import com.example.model.User;
 import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.util.List;
+import com.example.model.*;
 
 public class DatabaseTest {
     public static void main(String[] args) {
@@ -99,7 +100,7 @@ public class DatabaseTest {
 
         // Test 9: Retrieve and display tasks with category names
         System.out.println("\n=== Test 9: Retrieving Tasks with Category Names ===");
-        List<TaskWithCategory> tasksWithCategories = dao.getTasksWithCategoryNames();
+        List<TaskWithCategory> tasksWithCategories = dao.getTasksWithCategoryNames("U001");
         for (TaskWithCategory twc : tasksWithCategories) {
             System.out.println("Task ID: " + twc.task.task_id + ", Title: " + twc.task.title + ", Category: " + (twc.category_name != null ? twc.category_name : "None"));
         }
@@ -118,6 +119,14 @@ public class DatabaseTest {
         System.out.println("\n=== Test 12: Deleting a User ===");
         dao.deleteUser("U004");
         System.out.println("Deleted user U004");
+
+        // Test 13: Get tasks by user
+//        System.out.println("\n=== Test 13: Get task by User ===");
+//        System.out.println();
+//        List<Task> tasksWithUser = dao.getTasksByUser("U001");
+//        for (Task twc : tasksWithUser) {
+//            System.out.println("Task ID: " + twc.task_id + ", Title: " + twc.title + ", Category: " );
+//        }
 
         // Close the database connection
         dao.close();

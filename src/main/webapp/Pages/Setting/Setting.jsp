@@ -18,32 +18,41 @@
         width: 70%;
         max-width: 800px;
     }
+
     .content img {
         border-radius: 50%;
         width: 100px;
         height: 100px;
         display: block;
         margin: 0 auto 15px;
+        object-fit: cover;
+        object-position: center;
     }
+
+    /* Các phần còn lại giữ nguyên */
     .content h2 {
         text-align: center;
         font-size: 24px;
         margin-bottom: 20px;
     }
+
     .content p {
         text-align: center;
         font-size: 16px;
         margin: 5px 0;
     }
+
     .form-group {
         margin-bottom: 20px;
     }
+
     .form-group label {
         display: block;
         margin-bottom: 8px;
         font-size: 16px;
         font-weight: bold;
     }
+
     .form-group input {
         width: 100%;
         padding: 12px;
@@ -51,12 +60,14 @@
         border-radius: 6px;
         font-size: 16px;
     }
+
     .buttons {
         margin-top: 30px;
         display: flex;
         justify-content: center;
         gap: 15px;
     }
+
     .buttons button {
         padding: 12px 30px;
         border: none;
@@ -65,18 +76,22 @@
         font-size: 16px;
         font-weight: bold;
     }
+
     .buttons .update {
         background-color: #ff9800;
         color: white;
     }
+
     .buttons .change-password {
         background-color: #ff4d4d;
         color: white;
     }
+
     .avatar-upload {
         text-align: center;
         margin: 15px 0;
     }
+
     .toast {
         position: fixed;
         top: 20px;
@@ -92,17 +107,21 @@
         visibility: visible;
         flex-direction: column;
     }
+
     .toast.error {
         background-color: #d32f2f;
         color: #ffffff;
     }
+
     .toast.success {
         background-color: #4caf50;
         color: #ffffff;
     }
+
     .toast.hidden {
         display: none;
     }
+
     .toast .message-container {
         display: flex;
         align-items: center;
@@ -110,6 +129,7 @@
         width: 100%;
         gap: 20px;
     }
+
     .toast .close-btn {
         cursor: pointer;
         font-size: 18px;
@@ -117,9 +137,11 @@
         color: #ffffff;
         line-height: 1;
     }
+
     .toast .close-btn:hover {
         color: #f0f0f0;
     }
+
     .toast .progress-bar {
         width: 100%;
         height: 4px;
@@ -128,12 +150,14 @@
         border-radius: 2px;
         overflow: hidden;
     }
+
     .toast .progress-bar .progress {
         height: 100%;
         background-color: #ffffff;
         width: 100%;
         animation: progress 2s linear forwards;
     }
+
     @keyframes progress {
         from {
             width: 100%;

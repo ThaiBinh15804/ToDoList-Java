@@ -165,7 +165,7 @@
 <div class="content">
     <a href="<%= contextPath %>/Setting" class="go-back">Quay lại</a>
     <h2>ĐỔI MẬT KHẨU</h2>
-    <img id="avatar-preview" src="<%= contextPath + (user.avatar != null && !user.avatar.isEmpty() ? user.avatar + "?t=" + System.currentTimeMillis() : "/Assets/Khanh/images/avatar.jpg") %>" alt="Avatar" onerror="this.src='<%= contextPath %>/Assets/Khanh/images/avatar.jpg';">
+    <img id="avatar-preview" src="<%= contextPath + (user.avatar != null && !user.avatar.isEmpty() ? "/Assets/Khanh/images/" + user.avatar + "?t=" + System.currentTimeMillis() : "/Assets/Khanh/images/avatar.jpg") %>" alt="Avatar" onerror="this.src='<%= contextPath %>/Assets/Khanh/images/haha.jpg';">
     <form action="<%= contextPath %>/ChangePassword" method="post">
         <div class="form-group">
             <label>MẬT KHẨU HIỆN TẠI</label>

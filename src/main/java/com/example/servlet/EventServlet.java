@@ -54,10 +54,12 @@ public class EventServlet extends HttpServlet {
                 if (task.start_time != null && task.end_time != null) {
                     Event event = new Event();
                     event.id = task.task_id;
-                    event.title = task.title + (taskWithCategory.category_name != null ? " (" + taskWithCategory.category_name + ")" : "");
+//                    event.title = task.title + (taskWithCategory.category_name != null ? " (" + taskWithCategory.category_name + ")" : "");
+                    event.title = task.title;
                     event.start = task.start_time.toString();
                     event.end = task.end_time.toString();
-                    event.category_name = taskWithCategory.category_name != null ? taskWithCategory.category_name : "No Category";
+                    event.category_id = taskWithCategory.category_id;
+                    event.category_name = taskWithCategory.category_name != null ? taskWithCategory.category_name : "";
                     event.status = task.status != null ? task.status : "Unknown";
                     event.priority = task.priority != null ? task.priority : "None";
                     event.description = task.description != null ? task.description : "";
@@ -87,6 +89,7 @@ public class EventServlet extends HttpServlet {
         public String title;
         public String start;
         public String end;
+        public String category_id;
         public String category_name;
         public String status;
         public String priority;

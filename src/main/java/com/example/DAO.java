@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.sql.*;
 
+import java.nio.charset.StandardCharsets;
+
 public class DAO {
     public DBConnect dbConnect;
 
@@ -210,7 +212,27 @@ public class DAO {
             stmt.setTimestamp(10, java.sql.Timestamp.valueOf(task.created_at));
             stmt.executeUpdate();
         } catch (SQLException e) {
+            // In đối tượng task để debug
+            System.err.println("Task: " + task);
+            // In câu lệnh với giá trị thực tế
+            String debugQuery = query.replace("?", "'%s'").replace("N?", "N'%s'");
+            String formattedQuery = String.format(debugQuery,
+                    task.task_id != null ? task.task_id.replace("'", "''") : "NULL",
+                    task.user_id != null ? task.user_id.replace("'", "''") : "NULL",
+                    task.category_id != null ? task.category_id.replace("'", "''") : "NULL",
+                    task.title != null ? new String(task.title.getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8).replace("'", "''") : "NULL",
+                    task.description != null ? new String(task.description.getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8).replace("'", "''") : "NULL",
+                    task.status != null ? new String(task.status.getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8).replace("'", "''") : "NULL",
+                    task.priority != null ? new String(task.priority.getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8).replace("'", "''") : "NULL",
+                    task.start_time != null ? task.start_time.toString() : "NULL",
+                    task.end_time != null ? task.end_time.toString() : "NULL",
+                    task.created_at != null ? task.created_at.toString() : "NULL"
+            );
+            System.err.println("Failed query: " + formattedQuery);
+            System.err.println("SQL Error Code: " + e.getErrorCode());
+            System.err.println("SQL State: " + e.getSQLState());
             e.printStackTrace();
+            throw new RuntimeException("Failed to insert task: " + e.getMessage(), e);
         }
     }
 
@@ -267,6 +289,25 @@ public class DAO {
             e.printStackTrace();
         }
         return task;
+    }
+
+    public String getNextTaskId() {
+        String query = "SELECT MAX(task_id) AS max_id FROM tasks";
+        try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                String maxId = rs.getString("max_id");
+                if (maxId != null && maxId.matches("T\\d{3}")) {
+                    int number = Integer.parseInt(maxId.substring(1));
+                    number++;
+                    return String.format("T%03d", number);
+                }
+            }
+            return "T001";
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "T001";
+        }
     }
 
     //Read: Get task by user
@@ -352,6 +393,7 @@ public class DAO {
 
                 TaskWithCategory taskWithCategory = new TaskWithCategory();
                 taskWithCategory.task = task;
+                taskWithCategory.category_id = rs.getString("category_id");
                 taskWithCategory.category_name = rs.getString("category_name");
                 tasksWithCategories.add(taskWithCategory);
             }
@@ -359,6 +401,26 @@ public class DAO {
             e.printStackTrace();
         }
         return tasksWithCategories;
+    }
+
+    public List<Category> getCategoriesByUser(String user_id) {
+        List<Category> categories = new ArrayList<>();
+        String query = "SELECT * FROM categories WHERE user_id = ?";
+        try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(query)) {
+            stmt.setString(1, user_id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Category category = new Category();
+                    category.category_id = rs.getString("category_id");
+                    category.user_id = rs.getString("user_id");
+                    category.name = rs.getString("name");
+                    categories.add(category);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return categories;
     }
 
     // Close the database connection

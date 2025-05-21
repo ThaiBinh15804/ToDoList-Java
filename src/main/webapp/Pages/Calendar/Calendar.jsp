@@ -40,6 +40,7 @@
             padding: 10px;
             background: #f8f9fa;
             border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .fc .fc-toolbar-title {
             cursor: pointer;
@@ -55,6 +56,7 @@
             padding: 8px 12px;
             border-radius: 6px;
             font-weight: 500;
+            transition: background-color 0.2s;
         }
         .fc .fc-button:hover {
             background-color: #0056b3;
@@ -80,6 +82,23 @@
             text-overflow: ellipsis;
             border-radius: 4px;
         }
+        .no-tasks-message {
+            text-align: center;
+            color: #555;
+            font-size: 1.2em;
+            margin-top: 20px;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .no-tasks-message a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .no-tasks-message a:hover {
+            text-decoration: underline;
+        }
         @media (max-width: 768px) {
             #calendar-container {
                 padding: 8px;
@@ -98,6 +117,9 @@
                 font-size: 0.8em;
                 min-width: 40px;
             }
+            .no-tasks-message {
+                font-size: 1em;
+            }
         }
         /* Overlay styles */
         .overlay {
@@ -114,57 +136,58 @@
         }
         .overlay-content {
             background: #ffffff;
-            padding: 30px;
-            border-radius: 12px;
+            padding: 20px;
+            border-radius: 8px;
             max-width: 600px;
             width: 90%;
             position: relative;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
-            border: 1px solid #e5e5e5;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border: 1px solid #e0e0e0;
         }
         .overlay-content h2 {
-            margin: 0 0 20px;
-            font-size: 1.9em;
+            margin: 0 0 15px;
+            font-size: 1.8em;
             color: #1a1a1a;
-            font-weight: 700;
-            border-bottom: 3px solid #007bff;
-            padding-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .overlay-content h2 i {
-            color: #007bff;
-        }
-        .overlay-content .task-details {
-            display: grid;
-            grid-template-columns: 140px 1fr;
-            gap: 15px;
-            align-items: start;
-        }
-        .overlay-content .task-details label {
-            font-weight: 500;
-            color: #333;
-            font-size: 1em;
-            padding-top: 6px;
+            font-weight: 600;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 8px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
-        .overlay-content .task-details label i {
+        .overlay-content h2 i {
+            color: #007bff;
+        }
+        .overlay-content .task-details, .overlay-content .edit-task-form, .overlay-content .create-task-form {
+            display: grid;
+            grid-template-columns: 130px 1fr;
+            gap: 12px;
+            align-items: center;
+            padding: 10px;
+        }
+        .overlay-content .task-details label, .overlay-content .edit-task-form label, .overlay-content .create-task-form label {
+            font-weight: 500;
+            color: #333;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .overlay-content .task-details label i, .overlay-content .edit-task-form label i, .overlay-content .create-task-form label i {
             color: #007bff;
         }
         .overlay-content .task-details .value {
             font-size: 1em;
             color: #2c2c2c;
             padding: 8px 12px;
-            background: #f1f4f8;
+            background: #f5f7fa;
             border-radius: 6px;
+            border: 1px solid #e0e0e0;
             word-break: break-word;
             transition: background 0.2s;
         }
         .overlay-content .task-details .value:hover {
-            background: #e6ecf2;
+            background: #e8ecef;
         }
         .overlay-content .task-details .status,
         .overlay-content .task-details .priority {
@@ -172,6 +195,7 @@
             border-radius: 12px;
             text-align: center;
             font-weight: 500;
+            border: 1px solid #e0e0e0;
         }
         .overlay-content .task-details .status.pending { background: #ffeaa7; color: #7c4a00; }
         .overlay-content .task-details .status.in-progress { background: #74c0fc; color: #003087; }
@@ -179,26 +203,57 @@
         .overlay-content .task-details .priority.high { background: #ff6b6b; color: #fff; }
         .overlay-content .task-details .priority.medium { background: #ffd166; color: #7c4a00; }
         .overlay-content .task-details .priority.low { background: #d3d3d3; color: #333; }
-        .overlay-content .task-details .priority.none { background: #f1f4f8; color: #333; }
-        .overlay-content .task-details .full-width {
+        .overlay-content .task-details .priority.none { background: #f5f7fa; color: #333; }
+        .overlay-content .task-details .full-width,
+        .overlay-content .edit-task-form .full-width,
+        .overlay-content .create-task-form .full-width {
             grid-column: 1 / -1;
         }
-        .overlay-content .task-details .description {
-            background: #f1f4f8;
-            padding: 12px;
+        .overlay-content .edit-task-form input,
+        .overlay-content .edit-task-form select,
+        .overlay-content .edit-task-form textarea,
+        .overlay-content .create-task-form input,
+        .overlay-content .create-task-form select,
+        .overlay-content .create-task-form textarea {
+            padding: 8px 12px;
+            border: 1px solid #d0d0d0;
             border-radius: 6px;
-            min-height: 100px;
-            max-height: 250px;
-            overflow-y: auto;
-            white-space: pre-wrap;
-            line-height: 1.5;
+            font-size: 1em;
+            width: 100%;
+            box-sizing: border-box;
+            background: #f5f7fa;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .overlay-content .edit-task-form select,
+        .overlay-content .create-task-form select {
+            appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path fill="%23333" d="M7 10l5 5 5-5z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            padding-right: 30px;
+        }
+        .overlay-content .edit-task-form textarea,
+        .overlay-content .create-task-form textarea {
+            min-height: 120px;
+            resize: vertical;
+            grid-column: 1 / -1;
+        }
+        .overlay-content .edit-task-form input:focus,
+        .overlay-content .edit-task-form select:focus,
+        .overlay-content .edit-task-form textarea:focus,
+        .overlay-content .create-task-form input:focus,
+        .overlay-content .create-task-form select:focus,
+        .overlay-content .create-task-form textarea:focus {
+            border-color: #007bff;
+            background: #ffffff;
+            outline: none;
         }
         .overlay-content .buttons {
             grid-column: 1 / -1;
             text-align: right;
-            margin-top: 20px;
+            margin-top: 15px;
             display: flex;
-            gap: 10px;
+            gap: 8px;
             justify-content: flex-end;
         }
         .overlay-content .buttons button {
@@ -214,24 +269,38 @@
             transform: translateY(-1px);
         }
         .overlay-content .buttons .edit-btn {
-            background-color: #007bff;
-            color: white;
+            background-color: #ffc107;
+            color: #333;
         }
         .overlay-content .buttons .edit-btn:hover {
-            background-color: #0056b3;
+            background-color: #e0a800;
         }
-        .overlay-content .buttons .close-btn {
+        .overlay-content .buttons .del-btn {
+            background-color: #ef322f;
+            color: #fff;
+        }
+        .overlay-content .buttons .del-btn:hover {
+            background-color: #cf5250;
+        }
+        .overlay-content .buttons .submit-btn {
+            background-color: #28a745;
+            color: white;
+        }
+        .overlay-content .buttons .submit-btn:hover {
+            background-color: #218838;
+        }
+        .overlay-content .buttons .cancel-btn {
             background-color: #dc3545;
             color: white;
         }
-        .overlay-content .buttons .close-btn:hover {
+        .overlay-content .buttons .cancel-btn:hover {
             background-color: #c82333;
         }
         .overlay-content .close-icon {
             position: absolute;
-            top: 15px;
-            right: 15px;
-            font-size: 1.5em;
+            top: 12px;
+            right: 12px;
+            font-size: 1.4em;
             cursor: pointer;
             color: #555;
             transition: color 0.2s;
@@ -241,43 +310,64 @@
         }
         @media (max-width: 768px) {
             .overlay-content {
-                padding: 20px;
+                padding: 15px;
                 max-width: 95%;
             }
             .overlay-content h2 {
-                font-size: 1.6em;
+                font-size: 1.5em;
             }
-            .overlay-content .task-details {
-                grid-template-columns: 120px 1fr;
+            .overlay-content .task-details,
+            .overlay-content .edit-task-form,
+            .overlay-content .create-task-form {
+                grid-template-columns: 100px 1fr;
                 gap: 10px;
             }
             .overlay-content .task-details label,
-            .overlay-content .task-details .value {
-                font-size: 0.95em;
+            .overlay-content .edit-task-form label,
+            .overlay-content .create-task-form label,
+            .overlay-content .task-details .value,
+            .overlay-content .edit-task-form input,
+            .overlay-content .edit-task-form select,
+            .overlay-content .edit-task-form textarea,
+            .overlay-content .create-task-form input,
+            .overlay-content .create-task-form select,
+            .overlay-content .create-task-form textarea {
+                font-size: 0.9em;
             }
             .overlay-content .buttons button {
                 padding: 8px 16px;
-                font-size: 0.95em;
+                font-size: 0.9em;
             }
             .overlay-content .close-icon {
-                top: 12px;
-                right: 12px;
-                font-size: 1.3em;
+                top: 10px;
+                right: 10px;
+                font-size: 1.2em;
             }
         }
         @media (max-width: 480px) {
-            .overlay-content .task-details {
+            .overlay-content .task-details,
+            .overlay-content .edit-task-form,
+            .overlay-content .create-task-form {
                 grid-template-columns: 1fr;
+                gap: 8px;
             }
-            .overlay-content .task-details label {
-                margin-bottom: 6px;
+            .overlay-content .task-details label,
+            .overlay-content .edit-task-form label,
+            .overlay-content .create-task-form label {
+                margin-bottom: 4px;
             }
-            .overlay-content .task-details .value {
+            .overlay-content .task-details .value,
+            .overlay-content .edit-task-form input,
+            .overlay-content .edit-task-form select,
+            .overlay-content .edit-task-form textarea,
+            .overlay-content .create-task-form input,
+            .overlay-content .create-task-form select,
+            .overlay-content .create-task-form textarea {
                 padding: 6px 10px;
             }
             .overlay-content .buttons {
                 flex-direction: column;
-                gap: 8px;
+                gap: 6px;
             }
         }
     </style>
@@ -285,12 +375,16 @@
 <body>
     <div id="calendar-container">
         <div id="calendar"></div>
+        <div id="no-tasks-message" class="no-tasks-message" style="display: none;">
+            Hiện tại bạn chưa có công việc nào.
+        </div>
     </div>
+    <!-- Overlay for task details and edit -->
     <div id="task-overlay" class="overlay">
         <div class="overlay-content">
-            <i class="fas fa-times close-icon" onclick="closeOverlay()"></i>
-            <h2><i class="fas fa-info-circle"></i> Chi tiết Công việc</h2>
-            <div class="task-details">
+            <i class="fas fa-times close-icon" onclick="closeOverlay('task-overlay')"></i>
+            <h2 id="task-overlay-title"><i class="fas fa-info-circle"></i> Chi tiết Công việc</h2>
+            <div id="task-details" class="task-details">
                 <label><i class="fas fa-heading"></i> Tiêu đề:</label>
                 <div class="value" id="task-title"></div>
                 <label><i class="fas fa-folder"></i> Danh mục:</label>
@@ -304,14 +398,90 @@
                 <label><i class="fas fa-exclamation-circle"></i> Ưu tiên:</label>
                 <div class="value priority" id="task-priority"></div>
                 <label class="full-width"><i class="fas fa-align-left"></i> Mô tả:</label>
-                <div class="description full-width" id="task-description"></div>
+                <div class="description full-width value" id="task-description"></div>
+                <div class="buttons">
+                    <button class="del-btn" onclick="deleteTask()">Xoá</button>
+                    <button class="edit-btn" onclick="switchToEditMode()">Chỉnh sửa</button>
+                </div>
+            </div>
+            <div id="edit-task-form" class="edit-task-form" style="display: none;">
+                <label><i class="fas fa-heading"></i> Tiêu đề:</label>
+                <input type="text" id="edit-task-title" required>
+                <label><i class="fas fa-folder"></i> Danh mục:</label>
+                <select id="edit-task-category">
+                    <option value="">Không có danh mục</option>
+                    <!-- Danh mục sẽ được điền động qua JavaScript -->
+                </select>
+                <label><i class="fas fa-clock"></i> Bắt đầu:</label>
+                <input type="text" id="edit-task-start" readonly>
+                <label><i class="fas fa-clock"></i> Kết thúc:</label>
+                <input type="text" id="edit-task-end">
+                <label><i class="fas fa-tasks"></i> Trạng thái:</label>
+                <select id="edit-task-status">
+                    <option value="Chưa bắt đầu">Chưa bắt đầu</option>
+                    <option value="Đang thực hiện">Đang thực hiện</option>
+                    <option value="Hoàn thành">Hoàn thành</option>
+                </select>
+                <label><i class="fas fa-exclamation-circle"></i> Ưu tiên:</label>
+                <select id="edit-task-priority">
+                    <option value="Thấp">Thấp</option>
+                    <option value="Trung bình">Trung bình</option>
+                    <option value="Cao">Cao</option>
+                </select>
+                <label class="full-width"><i class="fas fa-align-left"></i> Mô tả:</label>
+                <textarea id="edit-task-description" class="full-width"></textarea>
+                <div class="buttons">
+                    <button class="submit-btn" onclick="updateTask()">Lưu</button>
+                    <button class="cancel-btn" onclick="switchToDetailMode()">Hủy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Overlay for creating task -->
+    <div id="create-task-overlay" class="overlay">
+        <div class="overlay-content">
+            <i class="fas fa-times close-icon" onclick="closeOverlay('create-task-overlay')"></i>
+            <h2><i class="fas fa-plus-circle"></i> Tạo Công Việc Mới</h2>
+            <div class="create-task-form">
+                <label><i class="fas fa-heading"></i> Tiêu đề:</label>
+                <input type="text" id="create-task-title" required>
+                <label><i class="fas fa-folder"></i> Danh mục:</label>
+                <select id="create-task-category">
+                    <option value="">Không có danh mục</option>
+                    <!-- Danh mục sẽ được điền động qua JavaScript -->
+                </select>
+                <label><i class="fas fa-clock"></i> Bắt đầu:</label>
+                <input type="text" id="create-task-start" readonly>
+                <label><i class="fas fa-clock"></i> Kết thúc:</label>
+                <input type="text" id="create-task-end">
+                <label><i class="fas fa-tasks"></i> Trạng thái:</label>
+                <select id="create-task-status">
+                    <option value="Chưa bắt đầu">Chưa bắt đầu</option>
+                    <option value="Đang thực hiện">Đang thực hiện</option>
+                    <option value="Hoàn thành">Hoàn thành</option>
+                </select>
+                <label><i class="fas fa-exclamation-circle"></i> Ưu tiên:</label>
+                <select id="create-task-priority">
+                    <option value="Thấp">Thấp</option>
+                    <option value="Trung bình">Trung bình</option>
+                    <option value="Cao">Cao</option>
+                </select>
+                <label class="full-width"><i class="fas fa-align-left"></i> Mô tả:</label>
+                <textarea id="create-task-description" class="full-width"></textarea>
+                <div class="buttons">
+                    <button class="submit-btn" onclick="createTask()">Tạo</button>
+                    <button class="cancel-btn" onclick="closeOverlay('create-task-overlay')">Hủy</button>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
+        let currentTaskId = null;
+
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
+            var noTasksMessage = document.getElementById('no-tasks-message');
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'timeGridWeek',
                 headerToolbar: {
@@ -336,17 +506,23 @@
                                 if (response.status === 401) {
                                     alert('Bạn chưa đăng nhập. Vui lòng đăng nhập lại.');
                                     window.location.href = '/ToDoList/Pages/Login/Login.jsp';
+                                    return;
                                 } else if (response.status === 404 && data.message) {
-                                    alert(data.message);
+                                    noTasksMessage.textContent = data.message;
+                                    noTasksMessage.style.display = 'block';
                                     successCallback([]);
                                     return;
                                 }
+                                throw new Error(data.error || data.message || 'Unknown error');
                             });
                         }
+                        noTasksMessage.style.display = 'none';
                         return response.json();
                     })
                     .then(data => {
-                        successCallback(data);
+                        if (data) {
+                            successCallback(data);
+                        }
                     })
                     .catch(error => {
                         console.error('Error fetching events:', error);
@@ -355,6 +531,8 @@
                     });
                 },
                 eventClick: function(info) {
+                    console.log(info);
+                    currentTaskId = info.event._def.publicId;
                     document.getElementById('task-title').textContent = info.event.title;
                     document.getElementById('task-category').textContent = info.event.extendedProps.category_name || 'Không có';
                     document.getElementById('task-start').textContent = info.event.start.toLocaleString('vi-VN', {
@@ -368,15 +546,30 @@
                     document.getElementById('task-priority').textContent = info.event.extendedProps.priority || 'Không có';
                     document.getElementById('task-priority').className = 'value priority ' + (info.event.extendedProps.priority || 'none').toLowerCase();
                     document.getElementById('task-description').textContent = info.event.extendedProps.description || 'Không có';
+
+                    // Điền dữ liệu cho form chỉnh sửa
+                    document.getElementById('edit-task-title').value = info.event.title;
+                    document.getElementById('edit-task-category').value = info.event.extendedProps.category_id || '';
+                    document.getElementById('edit-task-start').value = info.event.start.toLocaleString('sv-SE', {
+                        year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+                    }).replace(' ', 'T');
+                    document.getElementById('edit-task-end').value = info.event.end ? info.event.end.toLocaleString('sv-SE', {
+                        year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+                    }).replace(' ', 'T') : '';
+                    document.getElementById('edit-task-status').value = info.event.extendedProps.status || 'Chưa bắt đầu';
+                    document.getElementById('edit-task-priority').value = info.event.extendedProps.priority || 'Thấp';
+                    document.getElementById('edit-task-description').value = info.event.extendedProps.description || '';
+
                     document.getElementById('task-overlay').style.display = 'flex';
+                    switchToDetailMode();
                 },
                 dateClick: function(info) {
-                    calendar.gotoDate(info.date);
-                    calendar.changeView('timeGridDay');
+                    openCreateTaskOverlay(info.date);
                 }
             });
             calendar.render();
 
+            // Tích hợp flatpickr vào tiêu đề lịch
             var titleElement = document.querySelector('.fc-toolbar-title');
             flatpickr(titleElement, {
                 enableTime: false,
@@ -388,13 +581,215 @@
                     }
                 }
             });
+
+            // Khởi tạo flatpickr cho create-task và edit-task
+            flatpickr('#create-task-start', {
+                enableTime: true,
+                dateFormat: 'Y-m-d H:i',
+                time_24hr: true,
+                locale: { firstDayOfWeek: 1 }
+            });
+            flatpickr('#create-task-end', {
+                enableTime: true,
+                dateFormat: 'Y-m-d H:i',
+                time_24hr: true,
+                locale: { firstDayOfWeek: 1 }
+            });
+            flatpickr('#edit-task-start', {
+                enableTime: true,
+                dateFormat: 'Y-m-d H:i',
+                time_24hr: true,
+                locale: { firstDayOfWeek: 1 }
+            });
+            flatpickr('#edit-task-end', {
+                enableTime: true,
+                dateFormat: 'Y-m-d H:i',
+                time_24hr: true,
+                locale: { firstDayOfWeek: 1 }
+            });
+
+            // Lấy danh mục từ server
+            fetchCategories();
         });
 
-        function closeOverlay() {
-            document.getElementById('task-overlay').style.display = 'none';
+        function closeOverlay(overlayId) {
+            document.getElementById(overlayId).style.display = 'none';
+            currentTaskId = null;
         }
 
+        function switchToEditMode() {
+            document.getElementById('task-overlay-title').innerHTML = '<i class="fas fa-edit"></i> Chỉnh sửa Công việc';
+            document.getElementById('task-details').style.display = 'none';
+            document.getElementById('edit-task-form').style.display = 'grid';
+        }
 
+        function switchToDetailMode() {
+            document.getElementById('task-overlay-title').innerHTML = '<i class="fas fa-info-circle"></i> Chi tiết Công việc';
+            document.getElementById('task-details').style.display = 'grid';
+            document.getElementById('edit-task-form').style.display = 'none';
+        }
+
+        function openCreateTaskOverlay(date) {
+            var startDate = new Date(date);
+            startDate.setHours(0, 0, 0, 0);
+            document.getElementById('create-task-start').value = startDate.toLocaleString('sv-SE', {
+                year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+            }).replace(' ', 'T');
+            document.getElementById('create-task-end').value = '';
+            document.getElementById('create-task-title').value = '';
+            document.getElementById('create-task-description').value = '';
+            document.getElementById('create-task-status').value = 'Chưa bắt đầu';
+            document.getElementById('create-task-priority').value = 'Thấp';
+            document.getElementById('create-task-overlay').style.display = 'flex';
+        }
+
+        function fetchCategories() {
+            fetch('/ToDoList/getCategories', {
+                method: 'GET'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch categories');
+                }
+                return response.json();
+            })
+            .then(data => {
+                var categorySelect = document.getElementById('create-task-category');
+                var editCategorySelect = document.getElementById('edit-task-category');
+                categorySelect.innerHTML = '<option value="">Không có danh mục</option>';
+                editCategorySelect.innerHTML = '<option value="">Không có danh mục</option>';
+                data.forEach(category => {
+                    var option = document.createElement('option');
+                    option.value = category.category_id;
+                    option.textContent = category.name;
+                    categorySelect.appendChild(option.cloneNode(true));
+                    editCategorySelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching categories:', error);
+                alert('Không thể tải danh mục: ' + error.message);
+            });
+        }
+
+        function createTask() {
+            var title = document.getElementById('create-task-title').value.trim();
+            if (!title) {
+                alert('Vui lòng nhập tiêu đề công việc.');
+                return;
+            }
+
+            var task = {
+                title: title,
+                category_id: document.getElementById('create-task-category').value || null,
+                description: document.getElementById('create-task-description').value.trim() || null,
+                status: document.getElementById('create-task-status').value,
+                priority: document.getElementById('create-task-priority').value,
+                start_time: document.getElementById('create-task-start').value.replace('T', ' '),
+                end_time: document.getElementById('create-task-end').value ? document.getElementById('create-task-end').value.replace('T', ' ') : null
+            };
+
+            fetch('/ToDoList/createTask', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8'
+                },
+                body: JSON.stringify(task)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(data => {
+                        throw new Error(data.error || 'Failed to create task');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert(data.message || 'Tạo công việc thành công!');
+                closeOverlay('create-task-overlay');
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error('Error creating task:', error);
+                alert('Không thể tạo công việc: ' + error.message);
+            });
+        }
+
+        function updateTask() {
+            var title = document.getElementById('edit-task-title').value.trim();
+            if (!title) {
+                alert('Vui lòng nhập tiêu đề công việc.');
+                return;
+            }
+
+            var task = {
+                task_id: currentTaskId,
+                title: title,
+                category_id: document.getElementById('edit-task-category').value || null,
+                description: document.getElementById('edit-task-description').value.trim() || null,
+                status: document.getElementById('edit-task-status').value,
+                priority: document.getElementById('edit-task-priority').value,
+                start_time: document.getElementById('edit-task-start').value.replace('T', ' '),
+                end_time: document.getElementById('edit-task-end').value ? document.getElementById('edit-task-end').value.replace('T', ' ') : null
+            };
+
+            fetch('/ToDoList/updateTask', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8'
+                },
+                body: JSON.stringify(task)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(data => {
+                        throw new Error(data.error || 'Failed to update task');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert(data.message || 'Cập nhật công việc thành công!');
+                closeOverlay('task-overlay');
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error('Error updating task:', error);
+                alert('Không thể cập nhật công việc: ' + error.message);
+            });
+        }
+
+        function deleteTask() {
+            if (!currentTaskId) {
+                alert('Không tìm thấy công việc để xóa.');
+                return;
+            }
+
+            fetch('/ToDoList/deleteTask', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8'
+                },
+                body: JSON.stringify({ task_id: currentTaskId })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(data => {
+                        throw new Error(data.error || 'Failed to delete task');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert(data.message || 'Xóa công việc thành công!');
+                closeOverlay('task-overlay');
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error('Error deleting task:', error);
+                alert('Không thể xóa công việc: ' + error.message);
+            });
+        }
     </script>
 </body>
 </html>

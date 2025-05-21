@@ -70,6 +70,19 @@
                       for (TaskWithCategory taskWithCategory : taskWithCategoryList) {
                               Task task = taskWithCategory.task;
                               String category_name = taskWithCategory.category_name;
+                               String priority = task.priority;
+                               String priorityColor;
+
+                               if ("Cao".equals(priority)) {
+                                       priorityColor = "#db4c40";
+                                   } else if ("Trung bình".equals(priority)) {
+                                       priorityColor = "#e9c46a";
+                                   } else if ("Thấp".equals(priority)) {
+                                       priorityColor = "#10b981";
+                                   } else {
+                                       priorityColor = "#dadada";
+                                   }
+
                               if ("Chưa bắt đầu".equals(task.status)) {
                                     found = true;
               %>
@@ -91,11 +104,11 @@
                                 <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
                                     <div style="padding: 4px 0; font-size: 14px; border-radius: 8px; color: black; display: flex; align-items: center; column-gap: 6px">
                                            <strong>Mức ưu tiên:</strong>
-                                           <div style="padding: 4px 8px; background-color: #dadada; color: black; border-radius: 12px; font-weight: 500;">
+                                           <div style="padding: 4px 8px; background-color: <%= priorityColor %>; color: black; border-radius: 12px; font-weight: 500; color: white;">
                                                 <%= task.priority %>
                                            </div>
                                     </div>
-                                    <span class="category-name" style=" padding: 4px 12px 6px; font-size: 14px; border-radius: 12px; color: #f2f2f2;">
+                                    <span class="category-name" style=" padding: 4px 12px 6px; font-size: 14px; border-radius: 12px; color: #f2f2f2; background-color: #0077b6">
                                         <%= category_name %>
                                     </span>
                                 </div>
@@ -123,6 +136,19 @@
                        for (TaskWithCategory taskWithCategory : taskWithCategoryList) {
                            Task task = taskWithCategory.task;
                            String category_name = taskWithCategory.category_name;
+                           String priority = task.priority;
+                                                          String priorityColor;
+
+                                                          if ("Cao".equals(priority)) {
+                                                                  priorityColor = "#db4c40";
+                                                              } else if ("Trung bình".equals(priority)) {
+                                                                  priorityColor = "#e9c46a";
+                                                              } else if ("Thấp".equals(priority)) {
+                                                                  priorityColor = "#10b981";
+                                                              } else {
+                                                                  priorityColor = "#dadada";
+                                                              }
+
                            if ("Đang thực hiện".equals(task.status)) {
                                found2 = true;
                %>
@@ -142,11 +168,11 @@
                                    <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
                                        <div style="padding: 4px 0; font-size: 14px; border-radius: 8px; color: black; display: flex; align-items: center; column-gap: 6px">
                                            <strong>Mức ưu tiên:</strong>
-                                           <div style="padding: 4px 8px 6px; background-color: #dadada; color: black; border-radius: 12px; font-weight: 500;">
-                                               <%= task.priority %>
+                                           <div style="padding: 4px 8px; background-color: <%= priorityColor %>; color: black; border-radius: 12px; font-weight: 500; color: white;">
+                                                <%= task.priority %>
                                            </div>
                                        </div>
-                                       <span class="category-name" style="padding: 4px 12px 6px; font-size: 14px; border-radius: 12px; color: #f2f2f2;">
+                                       <span class="category-name" style="padding: 4px 12px 6px; font-size: 14px; border-radius: 12px; color: #f2f2f2; background-color: #0077b6">
                                            <%= category_name %>
                                        </span>
                                    </div>
@@ -174,6 +200,20 @@
                            for (TaskWithCategory taskWithCategory : taskWithCategoryList) {
                                 Task task = taskWithCategory.task;
                                 String category_name = taskWithCategory.category_name;
+
+                                String priority = task.priority;
+                                                               String priorityColor;
+
+                                                               if ("Cao".equals(priority)) {
+                                                                       priorityColor = "#db4c40";
+                                                                   } else if ("Trung bình".equals(priority)) {
+                                                                       priorityColor = "#e9c46a";
+                                                                   } else if ("Thấp".equals(priority)) {
+                                                                       priorityColor = "#10b981";
+                                                                   } else {
+                                                                       priorityColor = "#dadada";
+                                                                   }
+
                                 if ("Hoàn thành".equals(task.status)) {
                                     found3 = true;
                   %>
@@ -195,11 +235,11 @@
                                        <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
                                                                           <div style="padding: 4px 0; font-size: 14px; border-radius: 8px; color: black; display: flex; align-items: center; column-gap: 6px">
                                                                                  <strong>Mức ưu tiên:</strong>
-                                                                                 <div style="padding: 4px 8px 6px; background-color: #dadada; color: black; border-radius: 12px; font-weight: 500;">
-                                                                                      <%= task.priority %>
-                                                                                 </div>
+                                        <div style="padding: 4px 8px; background-color: <%= priorityColor %>; color: black; border-radius: 12px; font-weight: 500; color: white;">
+                                                                                        <%= task.priority %>
+                                        </div>
                                                                           </div>
-                                                                          <span class="category-name" style=" padding: 4px 12px; font-size: 14px; border-radius: 12px; color: #f2f2f2;">
+                                                                          <span class="category-name" style=" padding: 4px 12px; font-size: 14px; border-radius: 12px; color: #f2f2f2; background-color: #0077b6">
                                                                               <%= category_name %>
                                                                           </span>
                                                                       </div>
@@ -399,44 +439,43 @@
                </tbody>
            </table>
 
-           <div style="display: flex; justify-content: flex-end;">
-             <button onclick="openAddCategoryModal()"  style="font-size: 14px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); margin-top: 10px; padding: 6px 12px; border-radius: 12px; display: flex; align-items: center; background-color: #0466c8; border: none; color: white; font-size: 14px; cursor:pointer;">
+            <div id='add-category-form' style='display: none; margin-top: 10px; background: white; padding: 16px; border-radius: 12px; width: 100%; box-shadow: 0 4px 12px rgba(0,0,0,0.1); position: relative; border: 1px solid #dadada;'>
+                            <button onclick="closeAddCategoryModal()" style="position: absolute; top: 8px; right: 8px; background-color: transparent; border: none;">
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                                                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                                            class="lucide lucide-x-icon lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                                    </button>
+                            <h3 style="margin: 0 0 16px; font-size: 17px;">Thêm thể loại</h3>
+
+                              <form onsubmit="submitAddCategory(event)" style="display: flex; flex-direction: column; row-gap: 12px;">
+                                <input
+                                  type="text"
+                                  id="new-category-name"
+                                  placeholder="Nhập tên thể loại"
+                                  style="padding: 10px 12px; border-radius: 8px; border: 1px solid #ccc; font-size: 14px;"
+                                />
+
+                                <button
+                                  onclick="addCategory()"
+                                  style="padding: 10px 12px; border-radius: 8px; background: #28a745; color: white; border: none; font-size: 14px; cursor: pointer;"
+                                >
+                                  Thêm thể loại
+                                </button>
+                              </form>
+           </div>
+
+           <div id='btn-add-category' style="display: flex; justify-content: flex-end;">
+             <button  onclick="openAddCategoryModal()"  style="font-size: 14px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); margin-top: 10px; padding: 6px 12px; border-radius: 12px; display: flex; align-items: center; background-color: #0466c8; border: none; color: white; font-size: 14px; cursor:pointer;">
                                            <svg xmlns="http://www.w3.org/2000/svg" width="20"
                                            height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                            stroke-linejoin="round" class="lucide lucide-plus-icon lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-
-                                           Thêm
+                     Thêm
              </button>
            </div>
         </div>
 </div>
 
-<div id="add-category-form" style="position: fixed; top: 0 ; left:0; width: 100%; height: 100%; display: none; align-items: center; justify-content: center; ">
-  <div style='background: white; padding: 16px; border-radius: 12px; width: 450px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); position: relative; border: 1px solid #dadada;'>
-    <button onclick="closeAddCategoryModal()" style="position: absolute; top: 8px; right: 8px; background-color: transparent; border: none;">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                    class="lucide lucide-x-icon lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-            </button>
-    <h3 style="margin: 0 0 16px; font-size: 17px;">Thêm thể loại</h3>
 
-      <form onsubmit="submitAddCategory(event)" style="display: flex; flex-direction: column; row-gap: 12px;">
-        <input
-          type="text"
-          id="new-category-name"
-          placeholder="Nhập tên thể loại"
-          style="padding: 10px 12px; border-radius: 8px; border: 1px solid #ccc; font-size: 14px;"
-        />
-
-        <button
-          onclick="addCategory()"
-          style="padding: 10px 12px; border-radius: 8px; background: #28a745; color: white; border: none; font-size: 14px; cursor: pointer;"
-        >
-          Thêm danh mục
-        </button>
-      </form>
-  </div>
-</div>
 
 <div id="confirm-delete-modal-category" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background-color: rgba(0, 0, 0, 0.5); justify-content: center; align-items: center; z-index: 9999;">
@@ -452,22 +491,6 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/js/toastify.js"></script>
  <script>
      const contextPath = "<%= request.getContextPath() %>"
-     function applyCategoryColors() {
-       const categoryColorMap = {
-         "Mua sắm": "#ffba08",
-         "Cá nhân": "#ef233c",
-         "Công việc": "#0077b6",
-         "Học tập": "#8bc34a"
-       }
-
-       const categoryElements = document.querySelectorAll(".category-name")
-       categoryElements.forEach(function (element) {
-         const categoryName = element.textContent.trim()
-         const color = categoryColorMap[categoryName]
-         element.style.backgroundColor = color
-       })
-     }
-     applyCategoryColors()
 
      document.addEventListener("DOMContentLoaded", function () {
        let checkClear = false
@@ -590,14 +613,13 @@
                const taskListContainer = document.getElementById(containerId)
 
                if (taskGroups[status].length === 0) {
-                 taskListContainer.innerHTML = '<p style="text-align: center;">Không có kết quả</p>'
+                 taskListContainer.innerHTML = '<p style="text-align: center; color: #283618; font-size: 15px;">Không có công việc</p>'
                } else {
                  let taskHtml = ""
                  taskGroups[status].forEach(({ task, category_name }) => {
                    taskHtml += createTaskCard(task, category_name)
                  })
                  taskListContainer.innerHTML = taskHtml
-                 applyCategoryColors()
                }
              })
            })
@@ -607,6 +629,14 @@
        }
 
        function createTaskCard(task, category_name) {
+        let priorityColor = '#dadada';
+            if (task.priority === 'Cao') {
+                priorityColor = '#db4c40';
+            } else if (task.priority === 'Trung bình') {
+                priorityColor = '#e9c46a';
+            } else if (task.priority === 'Thấp') {
+                priorityColor = '#10b981';
+            }
          return `
                       <div class="task-card" data-task-id="\${task.task_id || ''}" onclick="openTaskModal(this)">
                           <h2 style="font-size: 18px; font-weight: 500; line-height: 12px;">
@@ -624,11 +654,11 @@
                           <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
                               <div style="padding: 4px 0; font-size: 14px; border-radius: 8px; color: black; display: flex; align-items: center; column-gap: 6px">
                                   <strong>Mức ưu tiên:</strong>
-                                  <div style="padding: 4px 8px; background-color: #dadada; color: black; border-radius: 12px; font-weight: 500;">
-                                      \${task.priority || 'N/A'}
-                                  </div>
+                                   <div style="padding: 4px 8px; background-color: \${priorityColor}; color: black; border-radius: 12px; font-weight: 500; color: white">
+                                           \${task.priority || 'N/A'}
+                                   </div>
                               </div>
-                              <span class="category-name" style="padding: 4px 12px; font-size: 14px; border-radius: 12px; color: #f2f2f2;">
+                              <span class="category-name" style="padding: 4px 12px; font-size: 14px; border-radius: 12px; color: #f2f2f2; background-color: #0077b6">
                                   \${category_name || 'No category'}
                               </span>
                           </div>
@@ -934,6 +964,8 @@
      }
 
      function openAddTaskModal() {
+      const btnAdd = document.getElementById("btn-add-category")
+      btnAdd.style.display = "none";
        // Hiển thị modal bằng cách đặt style display thành 'flex'
        document.getElementById("taskModal-2").style.display = "flex"
 
@@ -1372,11 +1404,15 @@
      }
 
      function openAddCategoryModal() {
-       document.getElementById("add-category-form").style.display = "flex"
+       document.getElementById("add-category-form").style.display = "block"
+       const btnAdd = document.getElementById("btn-add-category")
+       btnAdd.style.display = "none";
      }
 
      function closeAddCategoryModal() {
        document.getElementById("add-category-form").style.display = "none"
+       const btnAdd = document.getElementById("btn-add-category")
+       btnAdd.style.display = "flex";
      }
 
      function submitAddCategory(event) {

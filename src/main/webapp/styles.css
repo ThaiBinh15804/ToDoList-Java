@@ -310,3 +310,10 @@ td {
     align-items: center;
     margin-bottom: 5px;
 }
+
+.percent {
+    position: absolute;
+    top: 35%;
+    left: 55%;
+    transform: translate(-50%, -50%);
+}

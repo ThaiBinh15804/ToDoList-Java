@@ -1,4 +1,5 @@
 package com.example;
+import com.example.model.TaskStatistics;
 import com.example.model.TaskWithCategory;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -7,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
     @WebServlet(urlPatterns = {"/MyTask", "/MyTask/", "/Calendar", "/Calendar/", "/DashBoard", "/DashBoard/", "/Setting", "/Setting/"})
@@ -32,6 +34,27 @@ import java.util.List;
                     break;
                 case "/DashBoard":
                     contentPage = "/Pages/DashBoard/DashBoard.jsp";
+
+                    String userId = "U001"; // Hoặc: (String) request.getSession().getAttribute("user_id");
+
+                    // Gọi DAO để lấy thống kê
+                    TaskStatistics stats = taskDAO.getTaskStatisticsByUserId(userId);
+                    try {
+                        List<TaskWithCategory> tasks = taskDAO.getTasksForToday(userId);
+                        request.setAttribute("taskWithCategoryListToday", tasks);
+
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    try {
+                        List<TaskWithCategory> tasksComplete = taskDAO.getCompletedTasks(userId);
+                        request.setAttribute("taskWithCategoryListCompleted", tasksComplete);
+
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    // Gửi sang JSP để render
+                    request.setAttribute("taskStats", stats);
                     break;
                 case "/Setting":
                     contentPage = "/Pages/Setting/Setting.jsp";

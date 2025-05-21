@@ -1,11 +1,10 @@
 package com.example;
 
-import com.example.model.Category;
-import com.example.model.Task;
-import com.example.model.TaskWithCategory;
-import com.example.model.User;
+import com.example.model.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,8 +17,128 @@ public class DAO {
         dbConnect = new DBConnect();
     }
 
-    // --- User CRUD Operations ---
+    public TaskStatistics getTaskStatisticsByUserId(String userId) {
+        String sql = "SELECT status, COUNT(*) as count FROM tasks WHERE user_id = ? GROUP BY status";
+        int notStarted = 0;
+        int inProgress = 0;
+        int completed = 0;
+        int total = 0;
 
+        try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(sql)) {
+            stmt.setString(1, userId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                String status = rs.getString("status");
+                int count = rs.getInt("count");
+                total += count;
+
+                switch (status) {
+                    case "Chưa bắt đầu":
+                        notStarted = count;
+                        break;
+                    case "Đang thực hiện":
+                        inProgress = count;
+                        break;
+                    case "Hoàn thành":
+                        completed = count;
+                        break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return new TaskStatistics(total, notStarted, inProgress, completed);
+    }
+
+    public List<TaskWithCategory> getTasksForToday(String userId) throws SQLException {
+        List<TaskWithCategory> tasks = new ArrayList<>();
+
+        // Lấy ngày hiện tại tự động
+        LocalDate today = LocalDate.now(); // Lấy ngày hiện tại (22/05/2025)
+        LocalDateTime startOfDay = today.atStartOfDay(); // 00:00:00
+        LocalDateTime endOfDay = today.atTime(LocalTime.MAX); // 23:59:59.999999999
+
+        String query = "SELECT t.task_id, t.user_id, t.category_id, t.title, t.description, t.status, " +
+                       "t.priority, t.start_time, t.end_time, t.created_at, t.updated_at, c.name AS category_name " +
+                       "FROM tasks t " +
+                       "LEFT JOIN categories c ON t.category_id = c.category_id " +
+                       "WHERE t.user_id = ? AND t.start_time >= ? AND t.start_time <= ?" +
+                       "AND t.status IN (N'Chưa bắt đầu', N'Đang thực hiện')";
+
+        try (Connection conn = dbConnect.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, userId);
+            stmt.setObject(2, startOfDay); // Sử dụng LocalDateTime cho start_time
+            stmt.setObject(3, endOfDay);   // Sử dụng LocalDateTime cho end_time
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Task task = new Task();
+                    task.task_id = rs.getString("task_id");
+                    task.user_id = rs.getString("user_id");
+                    task.category_id = rs.getString("category_id");
+                    task.title = rs.getString("title");
+                    task.description = rs.getString("description");
+                    task.status = rs.getString("status");
+                    task.priority = rs.getString("priority");
+                    task.start_time = rs.getObject("start_time", LocalDateTime.class);
+                    task.end_time = rs.getObject("end_time", LocalDateTime.class);
+                    task.created_at = rs.getObject("created_at", LocalDateTime.class);
+                    task.updated_at = rs.getObject("updated_at", LocalDateTime.class);
+
+                    String categoryName = rs.getString("category_name");
+                    TaskWithCategory taskWithCategory = new TaskWithCategory();
+                    taskWithCategory.task = task;
+                    taskWithCategory.category_name = categoryName != null ? categoryName : "N/A";
+                    tasks.add(taskWithCategory);
+                }
+            }
+        }
+        return tasks;
+    }
+
+    public List<TaskWithCategory> getCompletedTasks(String userId) throws SQLException {
+        List<TaskWithCategory> tasks = new ArrayList<>();
+
+        String query = "SELECT t.task_id, t.user_id, t.category_id, t.title, t.description, t.status, " +
+                       "t.priority, t.start_time, t.end_time, t.created_at, t.updated_at, c.name AS category_name " +
+                       "FROM tasks t " +
+                       "LEFT JOIN categories c ON t.category_id = c.category_id " +
+                       "WHERE t.user_id = ? AND t.status = N'Hoàn thành'";
+
+        try (Connection conn = dbConnect.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, userId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Task task = new Task();
+                    task.task_id = rs.getString("task_id");
+                    task.user_id = rs.getString("user_id");
+                    task.category_id = rs.getString("category_id");
+                    task.title = rs.getString("title");
+                    task.description = rs.getString("description");
+                    task.status = rs.getString("status");
+                    task.priority = rs.getString("priority");
+                    task.start_time = rs.getObject("start_time", LocalDateTime.class);
+                    task.end_time = rs.getObject("end_time", LocalDateTime.class);
+                    task.created_at = rs.getObject("created_at", LocalDateTime.class);
+                    task.updated_at = rs.getObject("updated_at", LocalDateTime.class);
+
+                    String categoryName = rs.getString("category_name");
+                    TaskWithCategory taskWithCategory = new TaskWithCategory();
+                    taskWithCategory.task = task;
+                    taskWithCategory.category_name = categoryName != null ? categoryName : "N/A";
+                    tasks.add(taskWithCategory);
+                }
+            }
+        }
+        return tasks;
+    }
+
+    // --- User CRUD Operations ---
     // Create: Insert a new user
     public void insertUser(User user) {
         String query = "INSERT INTO users (user_id, username, password, email, fullname, phone, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)";

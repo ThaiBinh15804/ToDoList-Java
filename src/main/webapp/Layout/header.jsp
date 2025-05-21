@@ -20,48 +20,84 @@
         response.sendRedirect(contextPath + "/Login");
         return;
     }
-    String userAvatar = user.avatar != null && !user.avatar.isEmpty() ? user.avatar : "/Assets/Khanh/images/avatar.jpg";
+    String userAvatar = user.avatar != null && !user.avatar.isEmpty() ? "/Assets/Khanh/images/" + user.avatar : "/Assets/Khanh/images/avatar.jpg";
     String userFullname = user.fullname != null ? user.fullname : "Người dùng";
 %>
 
 <style>
-    .dropdown {
-        position: relative;
-        display: inline-block;
-    }
-    .dropdown-content {
-        display: none;
-        position: absolute;
-        left: 0;
-        width: 100%;
-        min-width: 160px;
-        background-color: #d3d3d3;
-        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-        z-index: 1;
-        border-radius: 8px;
-        border: 1px solid #e0e0e0;
-        overflow: hidden;
-    }
-    .dropdown-content a {
-        color: #333;
-        padding: 10px 16px;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 14px;
-        font-weight: 500;
-        transition: background-color 0.2s ease;
-        border-radius: 8px;
-    }
-    .dropdown-content a:hover {
-        background-color: #a9a9a9;
-        color: #333;
-    }
-    .dropdown-content a img {
-        width: 20px;
-        height: 20px;
-    }
+.dropdown {
+    position: relative;
+    display: inline-block;
+    overflow: visible;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    min-width: 160px;
+    background-color: #ffffff;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1001;
+    border-radius: 8px;
+    border: 1px solid #ffffff;
+    overflow: visible;
+    top: 100%;
+    margin-top: 12px;
+}
+
+.dropdown-content::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #e5e7eb;
+    z-index: 1002;
+}
+
+.dropdown-content::after {
+    content: '';
+    position: absolute;
+    top: -9px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 11px solid transparent;
+    border-right: 11px solid transparent;
+    border-bottom: 11px solid #d3d3d3;
+    z-index: 1000;
+}
+
+.dropdown-content a {
+    color: #333;
+    padding: 10px 16px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    border-radius: 8px;
+    border-bottom: 2px solid #ffffff;
+}
+
+.dropdown-content a:last-child {
+    border-bottom: none;
+}
+
+.dropdown-content a:hover {
+    background-color: #e5e7eb;
+    color: #333;
+}
+
+.dropdown-content a img {
+    width: 20px;
+    height: 20px;
+}
 </style>
 
 <div class="header">
@@ -99,8 +135,12 @@
                 </div>
             </div>
             <div class="dropdown-content">
+                <a href="<%= contextPath %>/Setting">
+                    <img src="<%= contextPath %>/Assets/Khanh/images/setting2.svg" alt="Account Icon">
+                    Thông tin tài khoản
+                </a>
                 <a href="<%= contextPath %>/logout">
-                    <img src="<%= contextPath %>/Assets/Khanh/images/logout.svg" alt="Logout Icon">
+                    <img src="<%= contextPath %>/Assets/Khanh/images/logout2.svg" alt="Logout Icon">
                     Đăng xuất
                 </a>
             </div>

@@ -72,7 +72,7 @@ public class SettingServlet extends HttpServlet {
 
             try {
                 filePart.write(uploadPath + File.separator + fileName);
-                avatarPath = "/" + UPLOAD_DIR + "/" + fileName;
+                avatarPath = fileName; // Chỉ lưu tên file vào cơ sở dữ liệu
             } catch (IOException e) {
                 request.setAttribute("error", "Lỗi tải ảnh: " + e.getMessage());
                 forwardToJsp(request, response);

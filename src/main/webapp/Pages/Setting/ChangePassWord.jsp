@@ -106,6 +106,7 @@
         min-width: 200px;
         max-width: 400px;
         visibility: visible;
+        flex-direction: column; /* Đặt flex-direction để thanh tiến trình nằm dưới nội dung */
     }
     .toast.error {
         background-color: #d32f2f;
@@ -127,6 +128,35 @@
     }
     .toast .close-btn:hover {
         color: #f0f0f0;
+    }
+    .toast .message-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        gap: 20px;
+    }
+    .toast .progress-bar {
+        width: 100%;
+        height: 4px;
+        background-color: rgba(255, 255, 255, 0.3);
+        margin-top: 8px;
+        border-radius: 2px;
+        overflow: hidden;
+    }
+    .toast .progress-bar .progress {
+        height: 100%;
+        background-color: #ffffff;
+        width: 100%;
+        animation: progress 2s linear forwards;
+    }
+    @keyframes progress {
+        from {
+            width: 100%;
+        }
+        to {
+            width: 0%;
+        }
     }
 </style>
 
@@ -168,13 +198,23 @@
     <% String success = (String) session.getAttribute("Success"); %>
     <% if (error != null) { %>
         <div id="error-toast" class="toast error">
-            <span><%= error %></span>
-            <span class="close-btn" onclick="closeToast()">×</span>
+            <div class="message-container">
+                <span><%= error %></span>
+                <span class="close-btn" onclick="closeToast()">×</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
         </div>
     <% } else if (success != null) { %>
         <div id="success-toast" class="toast success">
-            <span><%= success %></span>
-            <span class="close-btn" onclick="closeToast('success-toast')">×</span>
+            <div class="message-container">
+                <span><%= success %></span>
+                <span class="close-btn" onclick="closeToast('success-toast')">X</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
         </div>
         <% session.removeAttribute("Success"); %>
     <% } %>

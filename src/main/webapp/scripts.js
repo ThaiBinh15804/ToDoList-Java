@@ -1,17 +1,14 @@
-//Load anh avatar
+// Load ảnh avatar
 function previewAvatar() {
     document.getElementById('avatar-input').addEventListener('change', function(event) {
         const file = event.target.files[0];
         if (file) {
-            // Kiểm tra định dạng tệp (JPG, PNG, GIF)
             const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
             if (!validTypes.includes(file.type)) {
                 alert('Chỉ hỗ trợ định dạng JPG, PNG hoặc GIF.');
-                event.target.value = ''; // Xóa tệp đã chọn
+                event.target.value = '';
                 return;
             }
-
-            // Đọc và hiển thị ảnh
             const reader = new FileReader();
             reader.onload = function(e) {
                 document.getElementById('avatar-preview').src = e.target.result;
@@ -24,7 +21,6 @@ document.addEventListener('DOMContentLoaded', previewAvatar);
 
 // Dropdown menu
 function setupDropdown() {
-    // Đóng dropdown khi nhấp ra ngoài
     document.addEventListener('click', function(event) {
         var dropdowns = document.getElementsByClassName('dropdown-content');
         for (var i = 0; i < dropdowns.length; i++) {
@@ -42,13 +38,36 @@ function setupDropdown() {
 }
 document.addEventListener('DOMContentLoaded', setupDropdown);
 
-// Thong bao lỗi
+// Đóng thông báo
 function closeToast(toastId = 'error-toast') {
     const toast = document.getElementById(toastId);
     if (toast) {
         toast.classList.add('hidden');
     }
 }
+
+// Hiển thị thông báo và tự động đóng sau 2 giây
+function showToast(toastId) {
+    const toast = document.getElementById(toastId);
+    if (toast) {
+        toast.classList.remove('hidden');
+        setTimeout(() => {
+            closeToast(toastId);
+        }, 2000);
+    }
+}
+
+// Tự động hiển thị toast khi trang tải
+document.addEventListener('DOMContentLoaded', function() {
+    const errorToast = document.getElementById('error-toast');
+    if (errorToast) {
+        showToast('error-toast');
+    }
+    const successToast = document.getElementById('success-toast');
+    if (successToast) {
+        showToast('success-toast');
+    }
+});
 
 // Ẩn hiện mật khẩu
 function togglePassword(inputId, iconElement) {

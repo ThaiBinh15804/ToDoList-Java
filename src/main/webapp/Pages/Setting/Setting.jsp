@@ -77,7 +77,6 @@
         text-align: center;
         margin: 15px 0;
     }
-    /* CSS cho toast */
     .toast {
         position: fixed;
         top: 20px;
@@ -85,16 +84,13 @@
         padding: 12px 20px;
         border-radius: 8px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 15px;
         z-index: 1000;
-        font-size: 18px; /* Font size 18px */
+        font-size: 18px;
         font-weight: 500;
         min-width: 200px;
         max-width: 400px;
         visibility: visible;
+        flex-direction: column;
     }
     .toast.error {
         background-color: #d32f2f;
@@ -107,6 +103,13 @@
     .toast.hidden {
         display: none;
     }
+    .toast .message-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        gap: 20px;
+    }
     .toast .close-btn {
         cursor: pointer;
         font-size: 18px;
@@ -117,11 +120,33 @@
     .toast .close-btn:hover {
         color: #f0f0f0;
     }
+    .toast .progress-bar {
+        width: 100%;
+        height: 4px;
+        background-color: rgba(255, 255, 255, 0.3);
+        margin-top: 8px;
+        border-radius: 2px;
+        overflow: hidden;
+    }
+    .toast .progress-bar .progress {
+        height: 100%;
+        background-color: #ffffff;
+        width: 100%;
+        animation: progress 2s linear forwards;
+    }
+    @keyframes progress {
+        from {
+            width: 100%;
+        }
+        to {
+            width: 0%;
+        }
+    }
 </style>
 
 <div class="content">
     <h2>THÔNG TIN NGƯỜI DÙNG</h2>
-    <img id="avatar-preview" src="<%= contextPath + (user.avatar != null && !user.avatar.isEmpty() ? user.avatar + "?t=" + System.currentTimeMillis() : "/Assets/Khanh/images/avatar.jpg") %>" alt="Avatar" onerror="this.src='<%= contextPath %>/Assets/Khanh/images/haha.jpg';">
+    <img id="avatar-preview" src="<%= contextPath + (user.avatar != null && !user.avatar.isEmpty() ? "/Assets/Khanh/images/" + user.avatar + "?t=" + System.currentTimeMillis() : "/Assets/Khanh/images/avatar.jpg") %>" alt="Avatar" onerror="this.src='<%= contextPath %>/Assets/Khanh/images/haha.jpg';">
     <form action="<%= contextPath %>/UpdateSettings" method="post" enctype="multipart/form-data">
         <div class="avatar-upload">
             <input type="file" id="avatar-input" name="avatar" accept="image/jpeg,image/png,image/gif">
@@ -153,14 +178,23 @@
     <% String success = (String) request.getAttribute("success"); %>
     <% if (error != null) { %>
         <div id="error-toast" class="toast error">
-            <span><%= error %></span>
-            <span class="close-btn" onclick="closeToast()">×</span>
+            <div class="message-container">
+                <span><%= error %></span>
+                <span class="close-btn" onclick="closeToast()">×</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
         </div>
     <% } else if (success != null) { %>
         <div id="success-toast" class="toast success">
-            <span><%= success %></span>
-            <span class="close-btn" onclick="closeToast('success-toast')">×</span>
+            <div class="message-container">
+                <span><%= success %></span>
+                <span class="close-btn" onclick="closeToast('success-toast')">X</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
         </div>
     <% } %>
 </div>
-

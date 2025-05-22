@@ -116,6 +116,7 @@ body {
 }
 
 .header {
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -125,16 +126,26 @@ body {
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
+.header-left {
+    width: 25%;
+}
+
+.header-middle {
+    width: 55%;
+}
+
+.header-right {
+    width: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
 .header-left h1 {
     font-size: 22px;
     font-weight: bold;
     margin: 0;
-}
-
-.header-right {
-    display: flex;
-    align-items: center;
-    gap: 12px;
 }
 
 .icon-btn {
@@ -160,7 +171,7 @@ body {
  }
 
 .form-input {
-    padding: 10px 12px;
+    padding: 10px 12px 12px;
     border: 1px solid #ccc;
     outline: none;
     border: none;
@@ -191,4 +202,118 @@ body {
 
 .form-button:hover {
       background-color: #357ac9;
+}
+
+.task-card {
+    padding: 8px 12px;
+    background-color: white;
+    border-radius:12px;
+    margin-bottom: 15px;
+    border: 2px solid #334977;
+    cursor: pointer;
+}
+
+.task-card:last-of-type {
+    margin-bottom: 0;
+}
+
+.custom-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background-color: #fff;
+    border: 1px solid #dadada;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    overflow: hidden;
+    padding: 12px 16px;
+}
+
+.custom-table td {
+    padding: 6px;
+    vertical-align: middle;
+}
+
+.custom-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+.custom-input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    border-top: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    border-left: 4px solid orange; /* Viền trái dày và màu cam */
+    background-color: #fefefe;
+    transition: all 0.2s ease-in-out;
+}
+
+.custom-input:focus {
+    border-color: #3b82f6;
+    outline: none;
+    box-shadow: 0 0 5px rgba(59, 130, 246, 0.4);
+}
+
+/* Nút chỉnh sửa và xóa */
+.action-cell {
+    padding: 0 !important;
+    text-align: center;
+    width: 40px;
+}
+
+td {
+    padding-right: 5px !important;
+    padding-left: 0px !important;
+}
+
+.btn-edit, .btn-delete {
+    padding: 0px 10px;
+    height: 36px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+}
+.btn-edit {
+    background-color: #10b981; /* Green */
+    color: white;
+}
+
+.btn-edit:hover {
+    background-color: #0f9f74;
+}
+
+.btn-delete {
+    background-color: #ef4444; /* Red */
+    color: white;
+}
+
+.btn-delete:hover {
+    background-color: #dc2626;
+}
+
+/* SVG icon resize */
+.btn-edit svg, .btn-delete svg {
+    pointer-events: none;
+    width: 18px;
+    height: 18px;
+}
+
+.wrapper {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.percent {
+    position: absolute;
+    top: 35%;
+    left: 55%;
+    transform: translate(-50%, -50%);
 }

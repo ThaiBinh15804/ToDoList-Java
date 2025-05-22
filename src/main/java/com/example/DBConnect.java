@@ -14,14 +14,21 @@ public class DBConnect {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             // Establish connection
             connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            System.out.println("✅ Kết nối database thành công.");
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
     }
 
     public Connection getConnection() {
-        return connection;
+        try {
+            return DriverManager.getConnection(URL, USER, PASSWORD);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
+
 
     public void closeConnection() {
         if (connection != null) {

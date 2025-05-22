@@ -6,6 +6,11 @@
 <html>
 <head>
     <title>Todo List</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="<%= contextPath %>/styles.css">
 </head>
 <body>
@@ -76,6 +81,12 @@
                     <p>Error: Content page not found.</p>
                 <% } %>
             </div>
+        </div>
+        <div style="position: fixed; bottom: 0; left: 0; padding: 8px;">
+            <a href="<%= contextPath %>/logout" style="display: flex; align-items: center; background-color: #1e3a8a; color: white; padding: 8px 12px; text-decoration: none; border-radius: 4px;">
+                <img src="<%= contextPath %>/Assets/Khanh/images/logout.svg" alt="Logout Icon" style="width: 30px; height: 30px; margin-right: 8px;">
+                Đăng xuất
+            </a>
         </div>
     </div>
 </body>

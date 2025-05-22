@@ -550,9 +550,9 @@
                     // Điền dữ liệu cho form chỉnh sửa
                     document.getElementById('edit-task-title').value = info.event.title;
                     document.getElementById('edit-task-category').value = info.event.extendedProps.category_id || '';
-                    document.getElementById('edit-task-start').value = info.event.start.toLocaleString('sv-SE', {
+                    document.getElementById('edit-task-start').value = info.event.start ? info.event.start.toLocaleString('sv-SE', {
                         year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
-                    }).replace(' ', 'T');
+                    }).replace(' ', 'T') : '';
                     document.getElementById('edit-task-end').value = info.event.end ? info.event.end.toLocaleString('sv-SE', {
                         year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
                     }).replace(' ', 'T') : '';
@@ -585,25 +585,25 @@
             // Khởi tạo flatpickr cho create-task và edit-task
             flatpickr('#create-task-start', {
                 enableTime: true,
-                dateFormat: 'Y-m-d H:i',
+                dateFormat: 'Y-m-d\\TH:i',
                 time_24hr: true,
                 locale: { firstDayOfWeek: 1 }
             });
             flatpickr('#create-task-end', {
                 enableTime: true,
-                dateFormat: 'Y-m-d H:i',
+                dateFormat: 'Y-m-d\\TH:i',
                 time_24hr: true,
                 locale: { firstDayOfWeek: 1 }
             });
             flatpickr('#edit-task-start', {
                 enableTime: true,
-                dateFormat: 'Y-m-d H:i',
+                dateFormat: 'Y-m-d\\TH:i',
                 time_24hr: true,
                 locale: { firstDayOfWeek: 1 }
             });
             flatpickr('#edit-task-end', {
                 enableTime: true,
-                dateFormat: 'Y-m-d H:i',
+                dateFormat: 'Y-m-d\\TH:i',
                 time_24hr: true,
                 locale: { firstDayOfWeek: 1 }
             });
@@ -634,7 +634,7 @@
             startDate.setHours(0, 0, 0, 0);
             document.getElementById('create-task-start').value = startDate.toLocaleString('sv-SE', {
                 year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
-            }).replace(' ', 'T');
+            });
             document.getElementById('create-task-end').value = '';
             document.getElementById('create-task-title').value = '';
             document.getElementById('create-task-description').value = '';
@@ -685,8 +685,8 @@
                 description: document.getElementById('create-task-description').value.trim() || null,
                 status: document.getElementById('create-task-status').value,
                 priority: document.getElementById('create-task-priority').value,
-                start_time: document.getElementById('create-task-start').value.replace('T', ' '),
-                end_time: document.getElementById('create-task-end').value ? document.getElementById('create-task-end').value.replace('T', ' ') : null
+                start_time: document.getElementById('create-task-start').value,
+                end_time: document.getElementById('create-task-end').value ? document.getElementById('create-task-end').value : null
             };
 
             fetch('/ToDoList/createTask', {
@@ -729,8 +729,8 @@
                 description: document.getElementById('edit-task-description').value.trim() || null,
                 status: document.getElementById('edit-task-status').value,
                 priority: document.getElementById('edit-task-priority').value,
-                start_time: document.getElementById('edit-task-start').value.replace('T', ' '),
-                end_time: document.getElementById('edit-task-end').value ? document.getElementById('edit-task-end').value.replace('T', ' ') : null
+                start_time: document.getElementById('edit-task-start').value,
+                end_time: document.getElementById('edit-task-end').value
             };
 
             fetch('/ToDoList/UpdateTask', {

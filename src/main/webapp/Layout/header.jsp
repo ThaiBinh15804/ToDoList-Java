@@ -105,8 +105,8 @@
         <h1><%= pageTitle %></h1>
     </div>
     <div class="header-middle">
-        <form class="form-container" action="#" method="POST">
-            <input type="text" class="form-input" placeholder="Nhập nội dung tìm kiếm..." name="userInput" />
+        <form class="form-container" action="<%= request.getContextPath() %>/MyTask" method="GET">
+            <input type="text" class="form-input" placeholder="Nhập nội dung tìm kiếm..." name="searchQuery" id="searchInput" />
             <button type="submit" class="form-button">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                      fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -149,3 +149,10 @@
 </div>
 
 <script src="<%= contextPath %>/scripts.js"></script>
+<script>
+
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param) || '';
+    }
+</script>

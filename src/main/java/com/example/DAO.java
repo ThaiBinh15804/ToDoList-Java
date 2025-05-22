@@ -768,6 +768,54 @@ public class DAO {
         return taskWithCategory;
     }
 
+    public List<TaskWithCategory> searchTasks(String user_id, String searchQuery) {
+        List<TaskWithCategory> tasksWithCategories = new ArrayList<>();
+        String query = "SELECT t.*, c.name AS category_name " +
+                "FROM tasks t " +
+                "LEFT JOIN categories c ON t.category_id = c.category_id " +
+                "WHERE t.user_id = ? AND (t.title LIKE ? OR t.description LIKE ?)";
+
+        try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(query)) {
+            stmt.setString(1, user_id);
+            stmt.setString(2, "%" + searchQuery + "%"); // Tìm kiếm trong title
+            stmt.setString(3, "%" + searchQuery + "%"); // Tìm kiếm trong description
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Task task = new Task();
+                    task.task_id = rs.getString("task_id");
+                    task.user_id = rs.getString("user_id");
+                    task.category_id = rs.getString("category_id");
+                    task.title = rs.getString("title");
+                    task.description = rs.getString("description");
+                    task.status = rs.getString("status");
+                    task.priority = rs.getString("priority");
+                    task.start_time = rs.getTimestamp("start_time") != null ? rs.getTimestamp("start_time").toLocalDateTime() : null;
+                    task.end_time = rs.getTimestamp("end_time") != null ? rs.getTimestamp("end_time").toLocalDateTime() : null;
+                    task.created_at = rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null;
+                    task.updated_at = rs.getTimestamp("updated_at") != null ? rs.getTimestamp("updated_at").toLocalDateTime() : null;
+
+                    TaskWithCategory taskWithCategory = new TaskWithCategory();
+                    taskWithCategory.task = task;
+                    taskWithCategory.category_name = rs.getString("category_name") != null ? rs.getString("category_name") : "N/A";
+                    tasksWithCategories.add(taskWithCategory);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return tasksWithCategories;
+    }
+
+    public void testSearchTasks() {
+        try {
+            List<TaskWithCategory> tasks = searchTasks("U001", "tập");
+            System.out.println("Tasks found: " + tasks.size());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     // Close the database connection
     public void close() {
         dbConnect.closeConnection();

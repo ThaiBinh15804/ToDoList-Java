@@ -10,6 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -30,6 +31,10 @@ import java.util.List;
                 path = path.substring(0, path.length() - 1);
             }
 
+            HttpSession session = request.getSession(false);
+            com.example.model.User user = (com.example.model.User) session.getAttribute("user");
+            String userId = user.user_id;
+
             String contentPage;
             switch (path) {
                 case "/Calendar":
@@ -37,8 +42,6 @@ import java.util.List;
                     break;
                 case "/DashBoard":
                     contentPage = "/Pages/DashBoard/DashBoard.jsp";
-
-                    String userId = "U001"; // Hoặc: (String) request.getSession().getAttribute("user_id");
 
                     // Gọi DAO để lấy thống kê
                     TaskStatistics stats = taskDAO.getTaskStatisticsByUserId(userId);
@@ -65,7 +68,7 @@ import java.util.List;
                 case "/MyTask":
                 default:
                     contentPage = "/Pages/MyTask/MyTask.jsp";
-                    List<TaskWithCategory> taskList = taskDAO.getTasksWithCategoryNames("U001");
+                    List<TaskWithCategory> taskList = taskDAO.getTasksWithCategoryNames(userId);
                     request.setAttribute("tasks", taskList);
                     break;
             }

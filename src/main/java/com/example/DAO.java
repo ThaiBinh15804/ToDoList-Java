@@ -556,6 +556,9 @@ public class DAO {
             stmt.setTimestamp(8, task.end_time != null ? java.sql.Timestamp.valueOf(task.end_time) : null);
             stmt.setTimestamp(9, java.sql.Timestamp.valueOf(LocalDateTime.now()));
             stmt.setString(10, task.task_id);
+
+            System.out.println(">>> STATUS gửi vào DB: " + task.status);
+
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

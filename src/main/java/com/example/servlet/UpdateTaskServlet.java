@@ -31,7 +31,7 @@ public class UpdateTaskServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-
+        request.setCharacterEncoding("UTF-8");
         try {
             // Kiểm tra session
             HttpSession session = request.getSession(false);
@@ -79,7 +79,6 @@ public class UpdateTaskServlet extends HttpServlet {
                 return;
             }
 
-            // Cập nhật task trong database
             dao.updateTask(task);
 
             response.setStatus(HttpServletResponse.SC_OK);

@@ -8,6 +8,8 @@
 <%
     List<TaskWithCategory> taskWithCategoryList  = (List<TaskWithCategory>) request.getAttribute("tasks");
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd-MM-yyyy");
+    com.example.model.User user = (com.example.model.User) session.getAttribute("user");
+    String userId = user.user_id;
 %>
 
 <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -570,7 +572,7 @@
              "Content-Type": "application/json"
            },
            body: JSON.stringify({
-             user_id: "U001",
+             user_id: "<%= userId %>",
              categoryIds: selectedCategoryIds,
              sortBy: currentSort
            })
@@ -722,7 +724,7 @@
        event.preventDefault() // Ngăn form tự reload lại trang
 
        const task_id = document.getElementById("modal-id").value
-       const user_id = "U001"
+       const user_id = "<%= userId%>"
        const title = document.getElementById("modal-title").value
        const description = document.getElementById("modal-description").value
        const status = document.getElementById("modal-status").value
@@ -995,7 +997,7 @@
 
      function submitAddTask(event) {
        event.preventDefault() // Ngăn form tự reload lại trang
-       const user_id = "U001"
+       const user_id = "<%= userId%>"
        const title = document.getElementById("modal-title-2").value
        const description = document.getElementById("modal-description-2").value
        const status = document.getElementById("modal-status-2").value
@@ -1237,7 +1239,7 @@
 
                // Kiểm tra tên danh mục tồn tại hay không
                fetch(
-                 "<%= request.getContextPath() %>/checkCategoryName?name=" + encodeURIComponent(newName) + "&userId=U001"
+                 "<%= request.getContextPath() %>/checkCategoryName?name=" + encodeURIComponent(newName) + "&userId=" + "<%= userId%>"
                )
                  .then((res) => res.json())
                  .then((data) => {
@@ -1265,7 +1267,7 @@
                    const updatedCategory = {
                      category_id: category.category_id,
                      name: newName,
-                     user_id: "U001"
+                     user_id: "<%= userId%>"
                    }
 
                    return fetch("<%= request.getContextPath() %>/UpdateCategory", {
@@ -1340,7 +1342,7 @@
        fetch(
          "<%= request.getContextPath() %>/checkCategoryInTask?categoryId=" +
            encodeURIComponent(deleteCategoryId) +
-           "&userId=U001"
+           "&userId=" + "<%= userId%>"
        )
          .then((res) => res.json())
          .then((data) => {
@@ -1417,7 +1419,7 @@
 
      function submitAddCategory(event) {
        event.preventDefault() // Ngăn form tự reload lại trang
-       const user_id = "U001"
+       const user_id = "<%= userId%>"
        let name = document.getElementById("new-category-name").value
 
        fetch("<%= request.getContextPath() %>/checkCategoryName?name=" + encodeURIComponent(name) + "&userId=" + user_id)

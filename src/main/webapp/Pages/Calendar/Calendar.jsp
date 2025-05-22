@@ -733,7 +733,7 @@
                 end_time: document.getElementById('edit-task-end').value ? document.getElementById('edit-task-end').value.replace('T', ' ') : null
             };
 
-            fetch('/ToDoList/updateTask', {
+            fetch('/ToDoList/UpdateTask', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json; charset=UTF-8'

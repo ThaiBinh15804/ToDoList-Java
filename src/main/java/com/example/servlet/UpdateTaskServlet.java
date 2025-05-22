@@ -16,7 +16,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
-@WebServlet("/updateTask")
+@WebServlet("/UpdateTask")
 public class UpdateTaskServlet extends HttpServlet {
     private DAO dao;
 

@@ -64,7 +64,7 @@ public class LoginServlet extends HttpServlet {
                 user.email = rs.getString("email");
                 user.fullname = rs.getString("fullname");
                 user.phone = rs.getString("phone");
-//                user.avatar = rs.getString("avatar");
+                user.avatar = rs.getString("avatar");
                 return user;
             }
         } catch (SQLException e) {

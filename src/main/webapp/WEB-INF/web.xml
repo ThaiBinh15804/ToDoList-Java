@@ -3,25 +3,4 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
          version="4.0">
-
-
-    <!-- Servlet cho Logout -->
-    <servlet>
-        <servlet-name>LogoutServlet</servlet-name>
-        <servlet-class>com.example.servlet.LogoutServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>LogoutServlet</servlet-name>
-        <url-pattern>/logout</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>SignupServlet</servlet-name>
-        <servlet-class>com.example.servlet.SignUpServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>SignupServlet</servlet-name>
-        <url-pattern>/Signup</url-pattern>
-    </servlet-mapping>
-
 </web-app>

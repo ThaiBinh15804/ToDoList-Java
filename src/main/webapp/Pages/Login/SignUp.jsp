@@ -5,6 +5,7 @@
 <head>
     <title>Đăng ký - Todo List</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
         body {
             margin: 0;
@@ -25,13 +26,13 @@
             background-color: white;
             border-radius: 16px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            max-width: 1200px; /* Tăng chiều rộng */
+            max-width: 1200px;
             width: 100%;
-            min-height: 700px; /* Tăng chiều cao */
+            min-height: 700px;
             overflow: hidden;
         }
         .illustration {
-            width: 50%; /* Tăng tỷ lệ để hình lớn hơn */
+            width: 50%;
             background-color: white;
             display: flex;
             justify-content: center;
@@ -45,7 +46,7 @@
         }
         .signup-form {
             padding: 50px;
-            width: 50%; /* Giảm tỷ lệ để cân đối */
+            width: 50%;
         }
         .signup-form h2 {
             margin-bottom: 25px;
@@ -55,10 +56,11 @@
         }
         .form-group {
             margin-bottom: 25px;
+            position: relative;
         }
         .form-group input {
             width: 100%;
-            padding: 14px;
+            padding: 14px 40px 14px 14px;
             border: 1px solid #ddd;
             border-radius: 8px;
             font-size: 16px;
@@ -67,6 +69,15 @@
         .form-group input:focus {
             border-color: #FF6F61;
             outline: none;
+        }
+        .form-group .eye-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 18px;
+            color: #666;
         }
         .terms {
             display: flex;
@@ -108,11 +119,69 @@
         .login-link a:hover {
             text-decoration: underline;
         }
-        .error-message {
-            color: red;
-            font-size: 16px;
-            margin-top: 10px;
-            text-align: center;
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            font-size: 18px;
+            font-weight: 500;
+            min-width: 200px;
+            max-width: 400px;
+            flex-direction: column;
+        }
+        .toast.error {
+            background-color: #d32f2f;
+            color: #ffffff;
+        }
+        .toast.success {
+            background-color: #4caf50;
+            color: #ffffff;
+        }
+        .toast.hidden {
+            display: none;
+        }
+        .toast .message-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            gap: 20px;
+        }
+        .toast .close-btn {
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffffff;
+            line-height: 1;
+        }
+        .toast .close-btn:hover {
+            color: #f0f0f0;
+        }
+        .toast .progress-bar {
+            width: 100%;
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.3);
+            margin-top: 8px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .toast .progress-bar .progress {
+            height: 100%;
+            background-color: #ffffff;
+            width: 100%;
+            animation: progress 2s linear forwards;
+        }
+        @keyframes progress {
+            from {
+                width: 100%;
+            }
+            to {
+                width: 0%;
+            }
         }
     </style>
 </head>
@@ -123,41 +192,65 @@
                 <img src="<%= contextPath %>/Assets/Khanh/images/background_signup.jpg" alt="Illustration">
             </div>
             <div class="signup-form">
-                <h2>Sign Up</h2>
+                <h2>Đăng ký</h2>
                 <form action="<%= contextPath %>/Signup" method="post">
                     <div class="form-group">
-                        <input type="text" id="firstName" name="firstName" placeholder="Enter First Name" required>
+                        <input type="text" id="firstName" name="firstName" placeholder="Nhập tên" required>
                     </div>
                     <div class="form-group">
-                        <input type="text" id="lastName" name="lastName" placeholder="Enter Last Name" required>
+                        <input type="text" id="lastName" name="lastName" placeholder="Nhập họ" required>
                     </div>
                     <div class="form-group">
-                        <input type="text" id="username" name="username" placeholder="Enter Username" required>
+                        <input type="text" id="username" name="username" placeholder="Nhập tên tài khoản" required>
                     </div>
                     <div class="form-group">
-                        <input type="email" id="email" name="email" placeholder="Enter Email" required>
+                        <input type="email" id="email" name="email" placeholder="Nhập Email" required>
                     </div>
                     <div class="form-group">
-                        <input type="password" id="password" name="password" placeholder="Enter Password" required>
+                        <input type="password" id="password" name="password" placeholder="Nhập mật khẩu" required autocomplete="new-password">
+                        <span class="eye-icon" onclick="togglePassword('password', this)">
+                            <i class="fas fa-eye"></i>
+                        </span>
                     </div>
                     <div class="form-group">
-                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
+                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Xác nhận mật khẩu" required autocomplete="new-password">
+                        <span class="eye-icon" onclick="togglePassword('confirmPassword', this)">
+                            <i class="fas fa-eye"></i>
+                        </span>
                     </div>
-                    <div class="terms">
-                        <input type="checkbox" id="terms" name="terms" required>
-                        <label for="terms">I agree to all terms</label>
-                    </div>
-                    <% String error = (String) request.getAttribute("error"); %>
-                    <% if (error != null) { %>
-                        <div class="error-message"><%= error %></div>
-                    <% } %>
-                    <button type="submit" class="signup-button">Register</button>
+                    <button type="submit" class="signup-button">Đăng ký</button>
                     <div class="login-link">
-                        <p>Already have an account? <a href="<%= contextPath %>/Pages/Login/Login.jsp">Sign In</a></p>
+                        <p>Đã có tài khoản? <a href="<%= contextPath %>/Pages/Login/Login.jsp">Đăng nhập</a></p>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+
+    <% String error = (String) request.getAttribute("error"); %>
+    <% String success = (String) request.getAttribute("success"); %>
+    <% if (error != null) { %>
+        <div id="error-toast" class="toast error">
+            <div class="message-container">
+                <span><%= error %></span>
+                <span class="close-btn" onclick="closeToast()">×</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+        </div>
+    <% } else if (success != null) { %>
+        <div id="success-toast" class="toast success">
+            <div class="message-container">
+                <span><%= success %></span>
+                <span class="close-btn" onclick="closeToast('success-toast')">X</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+        </div>
+    <% } %>
+
+    <script src="<%= contextPath %>/scripts.js"></script>
 </body>
 </html>

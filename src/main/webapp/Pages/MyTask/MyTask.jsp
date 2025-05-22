@@ -1418,6 +1418,8 @@
      }
 
      function submitAddCategory(event) {
+       const btnAdd = document.getElementById("btn-add-category")
+       btnAdd.style.display = "flex";
        event.preventDefault() // Ngăn form tự reload lại trang
        const user_id = "<%= userId%>"
        let name = document.getElementById("new-category-name").value

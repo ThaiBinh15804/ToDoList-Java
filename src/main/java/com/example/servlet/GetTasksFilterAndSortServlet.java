@@ -1,7 +1,6 @@
 package com.example.servlet;
 import com.example.DAO;
-import com.example.model.Task;
-import com.example.model.TaskWithCategory;
+import com.example.model.*;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;

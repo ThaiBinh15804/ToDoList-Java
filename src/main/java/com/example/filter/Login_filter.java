@@ -1,4 +1,4 @@
-package com.example;
+package com.example.filter;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;

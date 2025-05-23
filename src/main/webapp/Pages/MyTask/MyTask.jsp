@@ -6,7 +6,6 @@
 <%@ page import="com.example.model.Task" %>
 <%@ page import="java.time.format.DateTimeFormatter" %>
 <%
-    String contextPath = request.getContextPath();
     List<TaskWithCategory> taskWithCategoryList  = (List<TaskWithCategory>) request.getAttribute("tasks");
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd-MM-yyyy");
     com.example.model.User user = (com.example.model.User) session.getAttribute("user");
@@ -492,16 +491,37 @@
     </div>
 </div>
 <script type="text/javascript" src="${pageContext.request.contextPath}/js/toastify.js"></script>
-<script src="<%= contextPath %>/scripts.js"></script>
  <script>
      const contextPath = "<%= request.getContextPath() %>"
      console.log(contextPath)
+
+    if (typeof encodeURIComponent !== 'function') {
+        console.error('encodeURIComponent is not a function. Restoring it.');
+        window.encodeURIComponent = function(str) {
+            if (typeof str !== 'string') str = String(str);
+            return encodeURI(str).replace(/[!'()*]/g, function(c) {
+                return '%' + c.charCodeAt(0).toString(16).toUpperCase();
+            });
+        };
+    }
+
+    console.log('encodeURIComponent type:', typeof encodeURIComponent);
+
+
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        console.log(urlParams);
+        return urlParams.get(param) || "";
+    }
 
      document.addEventListener("DOMContentLoaded", function () {
        let checkClear = false;
        let selectedCategoryIds = []; // danh sách thể loại task hiện tại
        let currentSort = ""; // kiểu sắp xếp hiện tại
        let searchQuery = getQueryParam("searchQuery");
+
+       console.log("Seach query",searchQuery);
+
        const sortBtn = document.getElementById("btn-sort");
        const filterBtn = document.getElementById("btn-filter");
        const clearBtn = document.getElementById("btn-clear");
@@ -513,6 +533,18 @@
        checkClear = searchQuery !== "" || selectedCategoryIds.length > 0 || currentSort !== "";
        clearBtn.style.display = checkClear ? "flex" : "none";
 
+       // Check for editTaskId in URL and open modal if present
+       const editTaskId = getQueryParam("editTaskId");
+       console.log(editTaskId);
+       if (editTaskId) {
+           openTaskModalForEdit(editTaskId);
+           // Hide notification dropdown (assumed ID: notificationModal)
+           const notificationModal = document.getElementById("notificationModal");
+           if (notificationModal) {
+               notificationModal.style.display = "none";
+           }
+       }
+
        fetchAndRenderTasks();
 
        // Xử lý nút lọc
@@ -521,7 +553,7 @@
            const currentDisplay = window.getComputedStyle(modalFilter).display;
            if (currentDisplay === "none") {
                modalFilter.style.display = "block";
-               fetch(`${contextPath}/GetAllCategories`)
+               fetch(`\${contextPath}/GetAllCategories`)
                    .then((res) => res.json())
                    .then((categories) => {
                        const container = document.getElementById("modal-category-filter");
@@ -580,7 +612,7 @@
            checkClear = false;
            clearBtn.style.display = "none";
            // Xóa tham số searchQuery khỏi URL
-           window.history.replaceState({}, document.title, `${contextPath}/MyTask`);
+           window.history.replaceState({}, document.title, `\${contextPath}/MyTask`);
            fetchAndRenderTasks();
        });
 
@@ -686,7 +718,7 @@
                priorityColor = '#10b981';
            }
            return `
-               <div class="task-card" data-task-id="${task.task_id || ''}" onclick="openTaskModal(this)">
+               <div class="task-card" data-task-id="\${task.task_id || ''}" onclick="openTaskModal(this)">
                    <h2 style="font-size: 18px; font-weight: 500; line-height: 12px;">
                        \${task.title || 'No title'}
                    </h2>
@@ -715,6 +747,164 @@
        }
      })
 
+     function openTaskModalForEdit(taskId) {
+     console.log(taskId);
+         fetch(`\${contextPath}/GetTaskById?task_id=\${encodeURIComponent(taskId)}`, {
+             method: 'GET',
+             credentials: 'same-origin'
+         })
+             .then(response => {
+                 if (!response.ok) {
+                     if (response.status === 401) {
+                         Toastify({
+                             text: "❌ Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại!",
+                             duration: 2000,
+                             gravity: "top",
+                             position: "right",
+                             close: true,
+                             style: {
+                                 background: "#bf4342",
+                                 color: "#fff",
+                                 borderRadius: "8px",
+                                 padding: "14px 20px",
+                                 boxShadow: "0 3px 10px rgba(0,0,0,0.2)"
+                             },
+                             stopOnFocus: true
+                         }).showToast();
+                         setTimeout(() => {
+                             window.location.href = `\${contextPath}/Login`;
+                         }, 2000);
+                         return null;
+                     }
+                     throw new Error(`HTTP error! Status: ${response.status}`);
+                 }
+                 return response.json();
+             })
+             .then(data => {
+                 if (!data) return; // Early return if redirected
+                 if (data && data.task) {
+                     const task = data.task;
+                     const categoryName = data.category_name || '';
+                     console.log(task);
+
+                     // Populate modal fields
+                     document.getElementById("modal-id").value = task.task_id || '';
+                     document.getElementById("modal-title").value = task.title || '';
+                     document.getElementById("modal-description").value = task.description || '';
+                     document.getElementById("modal-status").value = task.status || 'Chưa bắt đầu';
+                     document.getElementById("modal-priority").value = task.priority || 'Thấp';
+
+                     // Format dates to YYYY-MM-DDThh:mm for datetime-local
+                     const startTime = task.start_time ? new Date(task.start_time) : null;
+                     const endTime = task.end_time ? new Date(task.end_time) : null;
+                     const createdAt = task.created_at ? new Date(task.created_at) : null;
+                     const updatedAt = task.updated_at ? new Date(task.updated_at) : null;
+
+                     if (startTime && !isNaN(startTime)) {
+                         document.getElementById("modal-start-time").value = toLocalDateTimeString(startTime);
+                     } else {
+                         document.getElementById("modal-start-time").value = '';
+                     }
+                     if (endTime && !isNaN(endTime)) {
+                         document.getElementById("modal-end-time").value = toLocalDateTimeString(endTime);
+                     } else {
+                         document.getElementById("modal-end-time").value = '';
+                     }
+                     if (createdAt && !isNaN(createdAt)) {
+                         document.getElementById("modal-created-at").value = toLocalDateTimeString(createdAt);
+                     } else {
+                         document.getElementById("modal-created-at").value = '';
+                     }
+                     if (updatedAt && !isNaN(updatedAt)) {
+                         document.getElementById("modal-updated-at").value = toLocalDateTimeString(updatedAt);
+                     } else {
+                         document.getElementById("modal-updated-at").value = '';
+                     }
+
+                     // Fetch categories
+                     fetch(`\${contextPath}/GetAllCategories`, {
+                         method: 'GET',
+                         credentials: 'same-origin'
+                     })
+                         .then(res => {
+                             if (!res.ok) {
+                                 throw new Error(`HTTP error! Status: ${res.status}`);
+                             }
+                             return res.json();
+                         })
+                         .then(categories => {
+                             const select = document.getElementById("modal-category");
+                             select.innerHTML = "";
+                             categories.forEach(category => {
+                                 const option = document.createElement("option");
+                                 option.value = category.category_id;
+                                 option.text = category.name;
+                                 if (category.name === categoryName || category.category_id === task.category_id) {
+                                     option.selected = true;
+                                 }
+                                 select.appendChild(option);
+                             });
+                             // Show modal
+                             document.getElementById("taskModal").style.display = "flex";
+                             // Clear editTaskId from URL
+                             window.history.replaceState({}, document.title, `\${contextPath}/MyTask`);
+                         })
+                         .catch(error => {
+                             console.error('Error fetching categories:', error);
+                             Toastify({
+                                 text: "❌ Lỗi khi tải danh mục!",
+                                 duration: 2000,
+                                 gravity: "top",
+                                 position: "right",
+                                 close: true,
+                                 style: {
+                                     background: "#bf4342",
+                                     color: "#fff",
+                                     borderRadius: "8px",
+                                     padding: "14px 20px",
+                                     boxShadow: "0 3px 10px rgba(0,0,0,0.2)"
+                                 },
+                                 stopOnFocus: true
+                             }).showToast();
+                         });
+                 } else {
+                     Toastify({
+                         text: "❌ Không tìm thấy công việc!",
+                         duration: 2000,
+                         gravity: "top",
+                         position: "right",
+                         close: true,
+                         style: {
+                             background: "#bf4342",
+                             color: "#fff",
+                             borderRadius: "8px",
+                             padding: "14px 20px",
+                             boxShadow: "0 3px 10px rgba(0,0,0,0.2)"
+                         },
+                         stopOnFocus: true
+                     }).showToast();
+                 }
+             })
+             .catch(error => {
+                 console.error('Error fetching task:', error);
+                 Toastify({
+                     text: "❌ Lỗi khi tải thông tin công việc!",
+                     duration: 2000,
+                     gravity: "top",
+                     position: "right",
+                     close: true,
+                     style: {
+                         background: "#bf4342",
+                         color: "#fff",
+                         borderRadius: "8px",
+                         padding: "14px 20px",
+                         boxShadow: "0 3px 10px rgba(0,0,0,0.2)"
+                     },
+                     stopOnFocus: true
+                 }).showToast();
+             });
+     }
+
      let deleteTaskId = null
 
      document.getElementById("delete-task-btn").addEventListener("click", function () {
@@ -730,7 +920,7 @@
      function confirmDelete() {
        if (!deleteTaskId) return
 
-       fetch("<%= request.getContextPath() %>/DeleteTask", {
+       fetch(`\${contextPath}/DeleteTask`, {
          method: "POST",
          headers: {
            "Content-Type": "application/json"
@@ -934,70 +1124,9 @@
      }
 
      function openTaskModal(element) {
-       const taskId = element.getAttribute("data-task-id")
-
-       // Fetch Task
-       fetch(`<%= request.getContextPath() %>/GetTaskById?task_id=` + taskId)
-         .then((response) => response.json())
-         .then((data) => {
-           if (data && data.task) {
-             const task = data.task
-             const categoryName = data.category_name
-
-             // Gán giá trị các field
-             document.getElementById("modal-id").value = task.task_id
-             document.getElementById("modal-title").value = task.title
-             document.getElementById("modal-description").value = task.description
-             document.getElementById("modal-status").value = task.status
-             document.getElementById("modal-priority").value = task.priority
-
-             const startTime = new Date(task.start_time)
-             const endTime = new Date(task.end_time)
-             const created_at = new Date(task.created_at)
-             const updated_at = new Date(task.updated_at)
-
-             if (!isNaN(startTime)) {
-               const localStart = toLocalDateTimeString(startTime)
-               document.getElementById("modal-start-time").value = localStart
-             }
-
-             if (!isNaN(endTime)) {
-               const localEnd = toLocalDateTimeString(endTime)
-               document.getElementById("modal-end-time").value = localEnd
-             }
-
-             if (!isNaN(created_at)) {
-               const localCreateAt = toLocalDateTimeString(created_at)
-               document.getElementById("modal-created-at").value = localCreateAt
-             }
-
-             if (!isNaN(updated_at)) {
-               const localUpdateAt = toLocalDateTimeString(updated_at)
-               document.getElementById("modal-updated-at").value = localUpdateAt
-             }
-
-             // Sau khi load task thì gọi API load category
-             fetch(`<%= request.getContextPath() %>/GetAllCategories`)
-               .then((res) => res.json())
-               .then((categories) => {
-                 const select = document.getElementById("modal-category")
-                 select.innerHTML = "" // Clear old options
-
-                 categories.forEach((category) => {
-                   const option = document.createElement("option")
-                   option.value = category.category_id
-                   option.text = category.name
-                   if (category.name === categoryName) {
-                     option.selected = true
-                   }
-                   select.appendChild(option)
-                 })
-
-                 // Show modal sau khi tất cả đã load xong
-                 document.getElementById("taskModal").style.display = "flex"
-               })
-           }
-         })
+         const taskId = element.getAttribute("data-task-id");
+         console.log(taskId)
+         openTaskModalForEdit(taskId);
      }
 
      function closeTaskModal() {
@@ -1447,7 +1576,6 @@
      function openAddCategoryModal() {
        document.getElementById("add-category-form").style.display = "block"
        const btnAdd = document.getElementById("btn-add-category")
-       btnAdd.style.display = "none";
      }
 
      function closeAddCategoryModal() {

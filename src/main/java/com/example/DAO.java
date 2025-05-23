@@ -816,6 +816,60 @@ public class DAO {
         }
     }
 
+    public List<Notification> getTaskNotifications(String user_id) {
+        List<Notification> notifications = new ArrayList<>();
+        String query = "SELECT t.task_id, t.user_id, t.title, t.description, t.status, t.start_time, t.end_time " +
+                "FROM tasks t WHERE t.user_id = ?";
+
+        try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(query)) {
+            stmt.setString(1, user_id);
+            ResultSet rs = stmt.executeQuery();
+            LocalDateTime now = LocalDateTime.now();
+
+            while (rs.next()) {
+                String taskId = rs.getString("task_id");
+                String title = rs.getString("title");
+                String description = rs.getString("description");
+                String status = rs.getString("status");
+                LocalDateTime startTime = rs.getTimestamp("start_time") != null ? rs.getTimestamp("start_time").toLocalDateTime() : null;
+                LocalDateTime endTime = rs.getTimestamp("end_time") != null ? rs.getTimestamp("end_time").toLocalDateTime() : null;
+
+                // Notification for task start
+                if (startTime != null && startTime.minusMinutes(5).isBefore(now) && startTime.plusMinutes(5).isAfter(now) &&
+                        (status.equals("Chưa bắt đầu") || status.equals("Đang thực hiện"))) {
+                    Notification notification = new Notification(
+                            "N" + taskId, taskId, user_id, "Task sắp bắt đầu: " + title,
+                            "Công việc '" + title + "' sắp đến giờ bắt đầu.",
+                            startTime, endTime, "START", now
+                    );
+                    notifications.add(notification);
+                }
+
+                // Notification for overdue tasks
+                if (endTime != null && endTime.isBefore(now)) {
+                    if (status.equals("Chưa bắt đầu")) {
+                        Notification notification = new Notification(
+                                "N" + taskId + "_OVERDUE", taskId, user_id, "Task quá hạn: " + title,
+                                "Công việc '" + title + "' đã quá hạn nhưng chưa bắt đầu. Bạn muốn xóa hay điều chỉnh thời gian?",
+                                startTime, endTime, "OVERDUE_NOT_STARTED", now
+                        );
+                        notifications.add(notification);
+                    } else if (status.equals("Đang thực hiện")) {
+                        Notification notification = new Notification(
+                                "N" + taskId + "_OVERDUE", taskId, user_id, "Task quá hạn: " + title,
+                                "Công việc '" + title + "' đã quá hạn. Bạn đã hoàn thành chưa? Nếu chưa, gia hạn hoặc đánh dấu hoàn thành.",
+                                startTime, endTime, "OVERDUE_IN_PROGRESS", now
+                        );
+                        notifications.add(notification);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return notifications;
+    }
+
     // Close the database connection
     public void close() {
         dbConnect.closeConnection();

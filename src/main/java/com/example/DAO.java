@@ -870,6 +870,23 @@ public class DAO {
         return notifications;
     }
 
+    public boolean updateTaskStatus(String taskId, String status) throws SQLException {
+        String query = "UPDATE tasks SET status = ?, updated_at = ? WHERE task_id = ?";
+        try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(query)) {
+            stmt.setString(1, status);
+            stmt.setTimestamp(2, java.sql.Timestamp.valueOf(LocalDateTime.now()));
+            stmt.setString(3, taskId);
+
+            System.out.println("Updating task status: task_id=" + taskId + ", status=" + status);
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0; // Return true if at least one row was updated
+        } catch (SQLException e) {
+            System.err.println("SQL Error Code: " + e.getErrorCode());
+            System.err.println("SQL State: " + e.getSQLState());
+            throw e; // Re-throw to let the servlet handle the error
+        }
+    }
+
     // Close the database connection
     public void close() {
         dbConnect.closeConnection();

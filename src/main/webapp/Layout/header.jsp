@@ -41,21 +41,53 @@
 .dropdown-content, .notification-dropdown-content {
     display: none;
     position: absolute;
-    width: 320px;
-    max-height: 400px;
+    width: 360px; /* Increased for better readability */
+    max-height: 450px; /* Slightly taller for more content */
     overflow-y: auto;
     background-color: #ffffff;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15); /* Deeper shadow */
     z-index: 1001;
-    border-radius: 8px;
-    border: 1px solid #e5e7eb;
+    border-radius: 10px; /* Softer corners */
+    border: 1px solid #e0e0e0;
     top: 100%;
     margin-top: 12px;
-    padding: 8px 0;
+    padding: 12px; /* More internal spacing */
+    right: 0;
 }
 
-.notification-dropdown-content {
-    right: 0;
+.notification-dropdown-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.notification-dropdown-content::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 4px;
+}
+
+.notification-dropdown-content::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
+.notification-dropdown-content::before, .notification-dropdown-content::after {
+    content: '';
+    position: absolute;
+    top: -10px;
+    right: 20px; /* Align with bell icon */
+    transform: none;
+}
+
+.notification-dropdown-content::before {
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #e0e0e0;
+    z-index: 1002;
+}
+
+.notification-dropdown-content::after {
+    border-left: 11px solid transparent;
+    border-right: 11px solid transparent;
+    border-bottom: 11px solid #ffffff;
+    z-index: 1003;
 }
 
 .dropdown-content {
@@ -63,7 +95,7 @@
     right: 0;
 }
 
-.dropdown-content::before, .notification-dropdown-content::before {
+.dropdown-content::before, .dropdown-content::after {
     content: '';
     position: absolute;
     top: -8px;
@@ -71,18 +103,14 @@
     transform: translateX(-50%);
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
+}
+
+.dropdown-content::before {
     border-bottom: 10px solid #e5e7eb;
     z-index: 1002;
 }
 
-.dropdown-content::after, .notification-dropdown-content::after {
-    content: '';
-    position: absolute;
-    top: -9px;
-    left: 50%;
-    transform: translateX(-50%);
-    border-left: 11px solid transparent;
-    border-right: 11px solid transparent;
+.dropdown-content::after {
     border-bottom: 11px solid #d3d3d3;
     z-index: 1000;
 }
@@ -93,11 +121,12 @@
     text-decoration: none;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px; /* Increased for spacing */
     font-size: 14px;
     font-weight: 500;
-    transition: background-color 0.2s ease;
-    border-bottom: 1px solid #e5e7eb;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    border-radius: 6px; /* Rounded items */
+    margin: 0 8px; /* Internal margin */
 }
 
 .dropdown-content a {
@@ -105,8 +134,15 @@
     align-items: center;
 }
 
-.dropdown-content a:hover, .notification-item:hover {
-    background-color: #f3f4f6;
+.notification-item {
+    background: #f9fafb; /* Light background for contrast */
+    border: 1px solid #e5e7eb; /* Subtle border */
+    margin-bottom: 8px;
+}
+
+.notification-item:hover {
+    background-color: #e5e7eb; /* Stronger hover effect */
+    transform: translateY(-1px); /* Slight lift */
 }
 
 .notification-item:last-child {
@@ -115,31 +151,70 @@
 
 .notification-item h4 {
     margin: 0;
-    font-size: 15px;
-    font-weight: 600;
-    color: #1f2937;
+    font-size: 16px; /* Larger for prominence */
+    font-weight: 700; /* Bolder */
+    color: #111827; /* Darker for emphasis */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.notification-item h4::before {
+    content: '📌'; /* Icon for title */
+    font-size: 14px;
 }
 
 .notification-item p {
-    margin: 4px 0;
+    margin: 0;
     font-size: 13px;
-    color: #4b5563;
+    color: #6b7280; /* Softer gray */
+    line-height: 1.5;
+}
+
+.notification-item p strong {
+    color: #374151; /* Darker for labels */
+    font-weight: 600;
+}
+
+.notification-item .time-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two-column for times */
+    gap: 8px;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.notification-item .time-info p {
+    margin: 0;
+    padding: 6px 8px;
+    background: #f1f5f9; /* Light background */
+    border-radius: 4px;
+}
+
+.notification-item .time-info p.overdue {
+    color: #dc2626; /* Red for overdue */
+    font-weight: 600;
 }
 
 .notification-item .buttons {
     display: flex;
-    gap: 8px;
-    margin-top: 8px;
+    justify-content: flex-end; /* Right-align buttons */
+    gap: 10px;
+    margin-top: 10px;
 }
 
 .notification-item button {
-    padding: 6px 12px;
+    padding: 8px 16px; /* Larger buttons */
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
     font-size: 13px;
-    font-weight: 500;
-    transition: background-color 0.2s ease;
+    font-weight: 600;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.notification-item button:hover {
+    transform: translateY(-1px);
 }
 
 .notification-item button.edit {
@@ -154,6 +229,8 @@
 .notification-item button.complete {
     background-color: #16a34a;
     color: white;
+    padding: 8px 20px; /* Slightly larger */
+    font-weight: 700; /* Emphasize */
 }
 
 .notification-item button.complete:hover {
@@ -169,16 +246,22 @@
     background-color: #b91c1c;
 }
 
-.notification-item .error-message {
-    color: #dc2626;
+.notification-item .error-message, .notification-item .success-message {
+    padding: 6px 10px;
+    border-radius: 4px;
     font-size: 12px;
-    margin-top: 4px;
+    margin-top: 8px;
+    font-weight: 500;
+}
+
+.notification-item .error-message {
+    background: #fee2e2; /* Light red background */
+    color: #dc2626;
 }
 
 .notification-item .success-message {
+    background: #dcfce7; /* Light green background */
     color: #16a34a;
-    font-size: 12px;
-    margin-top: 4px;
 }
 
 .dropdown-content a img {
@@ -316,9 +399,15 @@
         // Complete task via AJAX
         function completeTask(taskId, notificationDiv) {
             try {
+                if (!taskId) {
+                    console.error("Task ID is missing or invalid");
+                    showFeedback(notificationDiv, "Mã công việc không hợp lệ!", true);
+                    return;
+                }
+
                 console.log(`Completing task ${taskId}`);
                 const taskData = { task_id: taskId, status: "Hoàn thành" };
-                fetch('<%= contextPath %>/UpdateTask', {
+                fetch('<%= contextPath %>/CompleteTask', {
                     method: 'POST',
                     credentials: 'same-origin',
                     headers: { 'Content-Type': 'application/json' },
@@ -328,17 +417,21 @@
                         console.log('Complete response status:', response.status);
                         if (!response.ok) {
                             if (response.status === 401) {
-                                alert("Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại!");
-                                window.location.href = "<%= contextPath %>/Login";
+                                Toastify({
+                                    text: "❌ Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại!",
+                                    duration: 2000,
+                                    gravity: "top",
+                                    position: "right",
+                                    close: true,
+                                    style: { background: "#bf4342", color: "#fff", borderRadius: "8px", padding: "14px 20px", boxShadow: "0 3px 10px rgba(0,0,0,0.2)" },
+                                    stopOnFocus: true
+                                }).showToast();
+                                setTimeout(() => { window.location.href = `${contextPath}/Login`; }, 2000);
                                 return null;
                             }
-                            if (response.status === 403) {
-                                throw new Error("Bạn không có quyền chỉnh sửa công việc này.");
-                            }
-                            if (response.status === 400) {
-                                throw new Error("Dữ liệu không hợp lệ.");
-                            }
-                            throw new Error(`HTTP error! Status: ${response.status}`);
+                            return response.json().then(errData => {
+                                throw new Error(errData.error || `HTTP error! Status: ${response.status}`);
+                            });
                         }
                         return response.json();
                     })
@@ -348,6 +441,7 @@
                         if (data.message && data.message.includes("thành công")) {
                             showFeedback(notificationDiv, 'Công việc đã hoàn thành!', false);
                             setTimeout(fetchNotifications, 1000);
+                            window.location.reload();
                         } else {
                             showFeedback(notificationDiv, data.error || 'Lỗi khi hoàn thành công việc', true);
                         }

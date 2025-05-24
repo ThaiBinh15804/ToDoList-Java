@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/toastify.css" />
 <html>
 <head>
     <title>Lịch Công Việc</title>
@@ -475,7 +476,7 @@
             </div>
         </div>
     </div>
-
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/toastify.js"></script>
     <script>
         let currentTaskId = null;
 
@@ -716,47 +717,118 @@
         }
 
         function updateTask() {
-            var title = document.getElementById('edit-task-title').value.trim();
-            if (!title) {
-                alert('Vui lòng nhập tiêu đề công việc.');
-                return;
-            }
+            try {
+                // Get form values
+                const title = document.getElementById('edit-task-title').value.trim();
+                const startTime = document.getElementById('edit-task-start').value;
+                const endTime = document.getElementById('edit-task-end').value;
+                const status = document.getElementById('edit-task-status').value;
+                const priority = document.getElementById('edit-task-priority').value;
 
-            var task = {
-                task_id: currentTaskId,
-                title: title,
-                category_id: document.getElementById('edit-task-category').value || null,
-                description: document.getElementById('edit-task-description').value.trim() || null,
-                status: document.getElementById('edit-task-status').value,
-                priority: document.getElementById('edit-task-priority').value,
-                start_time: document.getElementById('edit-task-start').value,
-                end_time: document.getElementById('edit-task-end').value
-            };
-
-            fetch('/ToDoList/UpdateTask', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json; charset=UTF-8'
-                },
-                body: JSON.stringify(task)
-            })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(data => {
-                        throw new Error(data.error || 'Failed to update task');
-                    });
+                // Validate title
+                if (!title) {
+                    showToast('❌ Vui lòng nhập tiêu đề công việc.', true);
+                    return;
                 }
-                return response.json();
-            })
-            .then(data => {
-                alert(data.message || 'Cập nhật công việc thành công!');
-                closeOverlay('task-overlay');
-                window.location.reload();
-            })
-            .catch(error => {
-                console.error('Error updating task:', error);
-                alert('Không thể cập nhật công việc: ' + error.message);
-            });
+
+                // Validate status
+                const validStatuses = ['Chưa bắt đầu', 'Đang thực hiện', 'Hoàn thành'];
+                if (!validStatuses.includes(status)) {
+                    showToast('❌ Trạng thái không hợp lệ.', true);
+                    return;
+                }
+
+                // Validate priority
+                const validPriorities = ['Thấp', 'Trung bình', 'Cao'];
+                if (!validPriorities.includes(priority)) {
+                    showToast('❌ Ưu tiên không hợp lệ.', true);
+                    return;
+                }
+
+                // Validate start_time
+                if (!startTime) {
+                    showToast('❌ Vui lòng chọn thời gian bắt đầu.', true);
+                    return;
+                }
+                const startDate = new Date(startTime);
+                if (isNaN(startDate.getTime())) {
+                    showToast('❌ Thời gian bắt đầu không hợp lệ.', true);
+                    return;
+                }
+
+                // Validate end_time if provided
+                if (endTime) {
+                    const endDate = new Date(endTime);
+                    if (isNaN(endDate.getTime())) {
+                        showToast('❌ Thời gian kết thúc không hợp lệ.', true);
+                        return;
+                    }
+                    if (endDate <= startDate) {
+                        showToast('❌ Thời gian kết thúc phải sau thời gian bắt đầu.', true);
+                        return;
+                    }
+                }
+
+                // Construct task object
+                const task = {
+                    task_id: currentTaskId,
+                    title: title,
+                    category_id: document.getElementById('edit-task-category').value || null,
+                    description: document.getElementById('edit-task-description').value.trim() || null,
+                    status: status,
+                    priority: priority,
+                    start_time: startTime,
+                    end_time: endTime || null
+                };
+
+                // Send update request
+                fetch('/ToDoList/UpdateTask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    },
+                    body: JSON.stringify(task)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(data => {
+                                throw new Error(data.error || 'Failed to update task');
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        showToast('✅ ' + (data.message || 'Cập nhật công việc thành công!'), false);
+                        closeOverlay('task-overlay');
+                        window.location.reload();
+                    })
+                    .catch(error => {
+                        console.error('Error updating task:', error);
+                        showToast('❌ Không thể cập nhật công việc: ' + error.message, true);
+                    });
+            } catch (error) {
+                console.error('Error in updateTask:', error);
+                showToast('❌ Lỗi khi cập nhật công việc: ' + error.message, true);
+            }
+        }
+
+        // Toastify helper function
+        function showToast(message, isError) {
+            Toastify({
+                text: message,
+                duration: 2000,
+                gravity: 'top',
+                position: 'right',
+                close: true,
+                style: {
+                    background: isError ? '#bf4342' : '#008000',
+                    color: '#fff',
+                    borderRadius: '8px',
+                    padding: '14px 20px',
+                    boxShadow: '0 3px 10px rgba(0,0,0,0.2)'
+                },
+                stopOnFocus: true
+            }).showToast();
         }
 
         function deleteTask() {

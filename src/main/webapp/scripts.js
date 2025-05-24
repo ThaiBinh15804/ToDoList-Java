@@ -1,6 +1,6 @@
 // Load ảnh avatar
 function previewAvatar() {
-    document.getElementById('avatar-input').addEventListener('change', function(event) {
+    document.getElementById('avatar-input')?.addEventListener('change', function(event) {
         const file = event.target.files[0];
         if (file) {
             const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
@@ -18,25 +18,6 @@ function previewAvatar() {
     });
 }
 document.addEventListener('DOMContentLoaded', previewAvatar);
-
-// Dropdown menu
-function setupDropdown() {
-    document.addEventListener('click', function(event) {
-        var dropdowns = document.getElementsByClassName('dropdown-content');
-        for (var i = 0; i < dropdowns.length; i++) {
-            var openDropdown = dropdowns[i];
-            if (openDropdown.style.display === 'block' && !event.target.closest('.dropdown')) {
-                openDropdown.style.display = 'none';
-            }
-        }
-    });
-    document.querySelector('.dropdown').addEventListener('click', function(event) {
-        event.stopPropagation();
-        var dropdownContent = this.querySelector('.dropdown-content');
-        dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
-    });
-}
-document.addEventListener('DOMContentLoaded', setupDropdown);
 
 // Đóng thông báo
 function closeToast(toastId = 'error-toast') {
@@ -82,4 +63,10 @@ function togglePassword(inputId, iconElement) {
         icon.classList.remove("fa-eye-slash");
         icon.classList.add("fa-eye");
     }
+}
+
+// Get query parameter
+function getQueryParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param) || "";
 }

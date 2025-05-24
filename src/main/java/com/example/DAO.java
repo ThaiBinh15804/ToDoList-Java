@@ -768,6 +768,125 @@ public class DAO {
         return taskWithCategory;
     }
 
+    public List<TaskWithCategory> searchTasks(String user_id, String searchQuery) {
+        List<TaskWithCategory> tasksWithCategories = new ArrayList<>();
+        String query = "SELECT t.*, c.name AS category_name " +
+                "FROM tasks t " +
+                "LEFT JOIN categories c ON t.category_id = c.category_id " +
+                "WHERE t.user_id = ? AND (t.title LIKE ? OR t.description LIKE ?)";
+
+        try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(query)) {
+            stmt.setString(1, user_id);
+            stmt.setString(2, "%" + searchQuery + "%"); // Tìm kiếm trong title
+            stmt.setString(3, "%" + searchQuery + "%"); // Tìm kiếm trong description
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Task task = new Task();
+                    task.task_id = rs.getString("task_id");
+                    task.user_id = rs.getString("user_id");
+                    task.category_id = rs.getString("category_id");
+                    task.title = rs.getString("title");
+                    task.description = rs.getString("description");
+                    task.status = rs.getString("status");
+                    task.priority = rs.getString("priority");
+                    task.start_time = rs.getTimestamp("start_time") != null ? rs.getTimestamp("start_time").toLocalDateTime() : null;
+                    task.end_time = rs.getTimestamp("end_time") != null ? rs.getTimestamp("end_time").toLocalDateTime() : null;
+                    task.created_at = rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null;
+                    task.updated_at = rs.getTimestamp("updated_at") != null ? rs.getTimestamp("updated_at").toLocalDateTime() : null;
+
+                    TaskWithCategory taskWithCategory = new TaskWithCategory();
+                    taskWithCategory.task = task;
+                    taskWithCategory.category_name = rs.getString("category_name") != null ? rs.getString("category_name") : "N/A";
+                    tasksWithCategories.add(taskWithCategory);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return tasksWithCategories;
+    }
+
+    public void testSearchTasks() {
+        try {
+            List<TaskWithCategory> tasks = searchTasks("U001", "tập");
+            System.out.println("Tasks found: " + tasks.size());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<Notification> getTaskNotifications(String user_id) {
+        List<Notification> notifications = new ArrayList<>();
+        String query = "SELECT t.task_id, t.user_id, t.title, t.description, t.status, t.start_time, t.end_time " +
+                "FROM tasks t WHERE t.user_id = ?";
+
+        try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(query)) {
+            stmt.setString(1, user_id);
+            ResultSet rs = stmt.executeQuery();
+            LocalDateTime now = LocalDateTime.now();
+
+            while (rs.next()) {
+                String taskId = rs.getString("task_id");
+                String title = rs.getString("title");
+                String description = rs.getString("description");
+                String status = rs.getString("status");
+                LocalDateTime startTime = rs.getTimestamp("start_time") != null ? rs.getTimestamp("start_time").toLocalDateTime() : null;
+                LocalDateTime endTime = rs.getTimestamp("end_time") != null ? rs.getTimestamp("end_time").toLocalDateTime() : null;
+
+                // Notification for task start
+                if (startTime != null && startTime.minusMinutes(5).isBefore(now) && startTime.plusMinutes(5).isAfter(now) &&
+                        (status.equals("Chưa bắt đầu") || status.equals("Đang thực hiện"))) {
+                    Notification notification = new Notification(
+                            "N" + taskId, taskId, user_id, "Task sắp bắt đầu: " + title,
+                            "Công việc '" + title + "' sắp đến giờ bắt đầu.",
+                            startTime, endTime, "START", now
+                    );
+                    notifications.add(notification);
+                }
+
+                // Notification for overdue tasks
+                if (endTime != null && endTime.isBefore(now)) {
+                    if (status.equals("Chưa bắt đầu")) {
+                        Notification notification = new Notification(
+                                "N" + taskId + "_OVERDUE", taskId, user_id, "Task quá hạn: " + title,
+                                "Công việc '" + title + "' đã quá hạn nhưng chưa bắt đầu. Bạn muốn xóa hay điều chỉnh thời gian?",
+                                startTime, endTime, "OVERDUE_NOT_STARTED", now
+                        );
+                        notifications.add(notification);
+                    } else if (status.equals("Đang thực hiện")) {
+                        Notification notification = new Notification(
+                                "N" + taskId + "_OVERDUE", taskId, user_id, "Task quá hạn: " + title,
+                                "Công việc '" + title + "' đã quá hạn. Bạn đã hoàn thành chưa? Nếu chưa, gia hạn hoặc đánh dấu hoàn thành.",
+                                startTime, endTime, "OVERDUE_IN_PROGRESS", now
+                        );
+                        notifications.add(notification);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return notifications;
+    }
+
+    public boolean updateTaskStatus(String taskId, String status) throws SQLException {
+        String query = "UPDATE tasks SET status = ?, updated_at = ? WHERE task_id = ?";
+        try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(query)) {
+            stmt.setString(1, status);
+            stmt.setTimestamp(2, java.sql.Timestamp.valueOf(LocalDateTime.now()));
+            stmt.setString(3, taskId);
+
+            System.out.println("Updating task status: task_id=" + taskId + ", status=" + status);
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0; // Return true if at least one row was updated
+        } catch (SQLException e) {
+            System.err.println("SQL Error Code: " + e.getErrorCode());
+            System.err.println("SQL State: " + e.getSQLState());
+            throw e; // Re-throw to let the servlet handle the error
+        }
+    }
+
     // Close the database connection
     public void close() {
         dbConnect.closeConnection();

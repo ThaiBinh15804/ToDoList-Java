@@ -335,7 +335,7 @@
         <% } %>
     </div>
 </div>
-
+<script src="<%= contextPath %>/scripts.js"></script>
 <% if (isAuthenticated) { %>
 <script>
     try {

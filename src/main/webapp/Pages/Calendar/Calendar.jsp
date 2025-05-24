@@ -551,12 +551,12 @@
                     // Điền dữ liệu cho form chỉnh sửa
                     document.getElementById('edit-task-title').value = info.event.title;
                     document.getElementById('edit-task-category').value = info.event.extendedProps.category_id || '';
-                    document.getElementById('edit-task-start').value = info.event.start ? info.event.start.toLocaleString('sv-SE', {
-                        year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
-                    }).replace(' ', 'T') : '';
-                    document.getElementById('edit-task-end').value = info.event.end ? info.event.end.toLocaleString('sv-SE', {
-                        year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
-                    }).replace(' ', 'T') : '';
+                    document.getElementById('edit-task-start').value = info.event.start.toLocaleString('vi-VN', {
+                        year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false
+                    });
+                    document.getElementById('edit-task-end').value = info.event.end.toLocaleString('vi-VN', {
+                        year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false
+                    });
                     document.getElementById('edit-task-status').value = info.event.extendedProps.status || 'Chưa bắt đầu';
                     document.getElementById('edit-task-priority').value = info.event.extendedProps.priority || 'Thấp';
                     document.getElementById('edit-task-description').value = info.event.extendedProps.description || '';
@@ -571,14 +571,28 @@
             calendar.render();
 
             // Tích hợp flatpickr vào tiêu đề lịch
+            // Tích hợp flatpickr vào tiêu đề lịch
             var titleElement = document.querySelector('.fc-toolbar-title');
             flatpickr(titleElement, {
                 enableTime: false,
-                dateFormat: 'Y-m-d',
-                locale: { firstDayOfWeek: 1 },
+                dateFormat: 'd/m/Y', // Định dạng DD/MM/YYYY
+                locale: {
+                    firstDayOfWeek: 1, // Thứ Hai là ngày đầu tuần
+                    weekdays: {
+                        shorthand: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
+                        longhand: ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy']
+                    },
+                    months: {
+                        shorthand: ['Th1', 'Th2', 'Th3', 'Th4', 'Th5', 'Th6', 'Th7', 'Th8', 'Th9', 'Th10', 'Th11', 'Th12'],
+                        longhand: ['Tháng Một', 'Tháng Hai', 'Tháng Ba', 'Tháng Tư', 'Tháng Năm', 'Tháng Sáu', 'Tháng Bảy', 'Tháng Tám', 'Tháng Chín', 'Tháng Mười', 'Tháng Mười Một', 'Tháng Mười Hai']
+                    }
+                },
                 onChange: function(selectedDates, dateStr) {
                     if (selectedDates.length > 0) {
-                        calendar.gotoDate(dateStr);
+                        // Chuyển đổi DD/MM/YYYY thành YYYY-MM-DD cho calendar.gotoDate
+                        const [day, month, year] = dateStr.split('/');
+                        const isoDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+                        calendar.gotoDate(isoDate);
                     }
                 }
             });

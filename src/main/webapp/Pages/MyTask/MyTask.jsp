@@ -551,14 +551,14 @@
        filterBtn.addEventListener("click", function () {
            const modalFilter = document.getElementById("modal-filter");
            const currentDisplay = window.getComputedStyle(modalFilter).display;
-           if (currentDisplay === "none") {
+         if (currentDisplay === "none") {
                modalFilter.style.display = "block";
                fetch(`\${contextPath}/GetAllCategories`)
-                   .then((res) => res.json())
-                   .then((categories) => {
+             .then((res) => res.json())
+             .then((categories) => {
                        const container = document.getElementById("modal-category-filter");
                        container.innerHTML = "";
-                       categories.forEach((category) => {
+               categories.forEach((category) => {
                            const wrapper = document.createElement("div");
                            wrapper.className = "wrapper";
                            const checkbox = document.createElement("input");
@@ -575,12 +575,12 @@
                            wrapper.appendChild(checkbox);
                            wrapper.appendChild(label);
                            container.appendChild(wrapper);
-                           if (selectedCategoryIds.includes(category.category_id)) {
+                 if (selectedCategoryIds.includes(category.category_id)) {
                                checkbox.checked = true;
-                           }
+                 }
                        });
                        const applyBtn = document.getElementById("btn-apply");
-                       applyBtn.addEventListener("click", function () {
+               applyBtn.addEventListener("click", function () {
                            const checkedBoxes = document.querySelectorAll("input[name='category-filter']:checked");
                            selectedCategoryIds = Array.from(checkedBoxes).map((cb) => cb.value);
                            modalFilter.style.display = "none";
@@ -589,9 +589,9 @@
                            fetchAndRenderTasks();
                        });
                    });
-           } else {
+         } else {
                modalFilter.style.display = "none";
-           }
+         }
        });
 
        // Xử lý sắp xếp
@@ -616,78 +616,77 @@
            fetchAndRenderTasks();
        });
 
-       // Hàm lấy và render tasks
        function fetchAndRenderTasks() {
-           let fetchUrl = `/ToDoList/GetTasksFilterAndSort`;
-           let body = {
-               user_id: "<%= userId %>",
-               categoryIds: selectedCategoryIds,
-               sortBy: currentSort
-           };
-           if (searchQuery) {
-               fetchUrl = `/ToDoList/searchTasks`;
-               body = { searchQuery: searchQuery };
-           }
+         const fetchUrl = "<%= request.getContextPath() %>/GetTasksFilterAndSort"
+          let body = {
+              user_id: "<%= userId %>",
+              categoryIds: selectedCategoryIds,
+              sortBy: currentSort
+          };
+          if (searchQuery) {
+              fetchUrl = `/ToDoList/searchTasks`;
+              body = { searchQuery: searchQuery };
+          }
 
-           console.log(body);
-           console.log(fetchUrl);
+          console.log(body);
+          console.log(fetchUrl);
 
-           fetch(fetchUrl, {
-               method: "POST",
-               headers: {
-                   "Content-Type": "application/json"
-               },
-               body: JSON.stringify(body)
+         fetch(fetchUrl, {
+           method: "POST",
+           headers: {
+             "Content-Type": "application/json"
+           },
+           body: JSON.stringify(body)
+         })
+           .then((res) => res.json())
+           .then((data) => {
+             document.querySelectorAll(".task-card").forEach((taskCard) => taskCard.remove())
+
+             const uniqueData = Array.from(new Set(data.map((item) => item.task?.task_id || "")))
+               .map((taskId) => data.find((item) => item.task?.task_id === taskId))
+               .filter((item) => item?.task)
+
+             const taskGroups = {
+               "chua bat dau": [],
+               "dang thuc hien": [],
+               "hoan thanh": []
+             }
+
+             const statusMap = {
+               "Chưa bắt đầu": "chua bat dau",
+               "Đang thực hiện": "dang thuc hien",
+               "Hoàn thành": "hoan thanh"
+             }
+
+             uniqueData.forEach((item) => {
+               const task = item.task
+               const category_name = item.category_name
+               const normalizedStatus = statusMap[task.status] || "chua bat dau"
+               taskGroups[normalizedStatus].push({ task, category_name })
+             })
+
+             const containerMap = {
+               "chua bat dau": "chua-bat-dau-tasks",
+               "dang thuc hien": "dang-thuc-hien-tasks",
+               "hoan thanh": "hoan-thanh-tasks"
+             }
+
+             Object.keys(taskGroups).forEach((status) => {
+               const containerId = containerMap[status]
+               const taskListContainer = document.getElementById(containerId)
+
+               if (taskGroups[status].length === 0) {
+                 taskListContainer.innerHTML = '<p style="text-align: center; color: #283618; font-size: 15px;">Không có công việc</p>'
+               } else {
+                 let taskHtml = ""
+                 taskGroups[status].forEach(({ task, category_name }) => {
+                   taskHtml += createTaskCard(task, category_name)
+                 })
+                 taskListContainer.innerHTML = taskHtml
+               }
+             })
            })
-              .then((res) => res.json())
-              .then((data) => {
-                document.querySelectorAll(".task-card").forEach((taskCard) => taskCard.remove())
-
-                const uniqueData = Array.from(new Set(data.map((item) => item.task?.task_id || "")))
-                  .map((taskId) => data.find((item) => item.task?.task_id === taskId))
-                  .filter((item) => item?.task)
-
-                const taskGroups = {
-                  "chua bat dau": [],
-                  "dang thuc hien": [],
-                  "hoan thanh": []
-                }
-
-                const statusMap = {
-                  "Chưa bắt đầu": "chua bat dau",
-                  "Đang thực hiện": "dang thuc hien",
-                  "Hoàn thành": "hoan thanh"
-                }
-
-                uniqueData.forEach((item) => {
-                  const task = item.task
-                  const category_name = item.category_name
-                  const normalizedStatus = statusMap[task.status] || "chua bat dau"
-                  taskGroups[normalizedStatus].push({ task, category_name })
-                })
-
-                const containerMap = {
-                  "chua bat dau": "chua-bat-dau-tasks",
-                  "dang thuc hien": "dang-thuc-hien-tasks",
-                  "hoan thanh": "hoan-thanh-tasks"
-                }
-
-                Object.keys(taskGroups).forEach((status) => {
-                  const containerId = containerMap[status]
-                  const taskListContainer = document.getElementById(containerId)
-
-                  if (taskGroups[status].length === 0) {
-                    taskListContainer.innerHTML = '<p style="text-align: center; color: #283618; font-size: 15px;">Không có công việc</p>'
-                  } else {
-                    let taskHtml = ""
-                    taskGroups[status].forEach(({ task, category_name }) => {
-                      taskHtml += createTaskCard(task, category_name)
-                    })
-                    taskListContainer.innerHTML = taskHtml
-                  }
-                })
-              })
-               .catch((error) => {
+           .catch((error) => {
                    console.error("Lỗi trong quá trình fetch:", error);
                    Toastify({
                        text: "❌ Lỗi khi tải công việc!",
@@ -706,47 +705,63 @@
                    }).showToast();
                });
        }
+       function convertTime(timeStr) {
+            if (!timeStr) return 'Không xác định';
+               console.log("time", timeStr);
+            const date = new Date(timeStr);
 
-       function createTaskCard(task, category_name) {
-           console.log(task)
+            // Kiểm tra date có hợp lệ không
+            if (isNaN(date.getTime())) return 'Không xác định';
+
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // tháng bắt đầu từ 0
+            const year = date.getFullYear();
+            const hour = String(date.getHours()).padStart(2, '0');
+            const minute = String(date.getMinutes()).padStart(2, '0');
+
+            return hour + ":" + minute + " " + day + "-" + month + "-" + year;
+          }
+
+        function createTaskCard(task, category_name) {
+           const formattedStartTime = convertTime(task.start_time);
            let priorityColor = '#dadada';
-           if (task.priority === 'Cao') {
-               priorityColor = '#db4c40';
-           } else if (task.priority === 'Trung bình') {
-               priorityColor = '#e9c46a';
-           } else if (task.priority === 'Thấp') {
-               priorityColor = '#10b981';
-           }
-           return `
-               <div class="task-card" data-task-id="\${task.task_id || ''}" onclick="openTaskModal(this)">
-                   <h2 style="font-size: 18px; font-weight: 500; line-height: 12px;">
-                       \${task.title || 'No title'}
-                   </h2>
-                   <p style="font-size: 16px; color: #535353">
-                       \${task.description}
-                   </p>
-                   <div style="font-size: 15px; color: #535353; display: flex; align-items: center; column-gap: 4px;">
-                       <span>Thời gian bắt đầu:</span>
-                       <span style="font-weight: 500; display: block">
-                           \${task.start_time}
-                       </span>
-                   </div>
-                   <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
-                       <div style="padding: 4px 0; font-size: 14px; border-radius: 8px; color: black; display: flex; align-items: center; column-gap: 6px">
-                           <strong>Mức ưu tiên:</strong>
-                           <div style="padding: 4px 8px; background-color: ${priorityColor}; color: black; border-radius: 12px; font-weight: 500; color: white">
-                               \${task.priority || 'N/A'}
-                           </div>
-                       </div>
-                       <span class="category-name" style="padding: 4px 12px; font-size: 14px; border-radius: 12px; color: #f2f2f2; background-color: #0077b6">
-                           \${category_name || 'No category'}
-                       </span>
-                   </div>
-               </div>
-           `;
-       }
-     })
+               if (task.priority === 'Cao') {
+                   priorityColor = '#db4c40';
+               } else if (task.priority === 'Trung bình') {
+                   priorityColor = '#e9c46a';
+               } else if (task.priority === 'Thấp') {
+                   priorityColor = '#10b981';
+               }
+            return `
+                         <div class="task-card" data-task-id="\${task.task_id || ''}" onclick="openTaskModal(this)">
+                             <h2 style="font-size: 18px; font-weight: 500; line-height: 12px;">
+                                 \${task.title || 'No title'}
+                             </h2>
+                             <p style="font-size: 16px; color: #535353">
+                                 \${task.description}
+                             </p>
+                             <div style="font-size: 15px; color: #535353; display: flex; align-items: center; column-gap: 4px;">
+                                 <span>Thời gian bắt đầu:</span>
+                                 <span style="font-weight: 500; display: block">
+                                     \${formattedStartTime}
+                                 </span>
+                             </div>
+                             <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+                                 <div style="padding: 4px 0; font-size: 14px; border-radius: 8px; color: black; display: flex; align-items: center; column-gap: 6px">
+                                     <strong>Mức ưu tiên:</strong>
+                                      <div style="padding: 4px 8px; background-color: \${priorityColor}; color: black; border-radius: 12px; font-weight: 500; color: white">
+                                              \${task.priority || 'N/A'}
+                                      </div>
+                                 </div>
+                                 <span class="category-name" style="padding: 4px 12px; font-size: 14px; border-radius: 12px; color: #f2f2f2; background-color: #0077b6">
+                                     \${category_name || 'No category'}
+                                 </span>
+                             </div>
+                         </div>
+                     `
+          }
 
+     })
      function openTaskModalForEdit(taskId) {
      console.log(taskId);
          fetch(`\${contextPath}/GetTaskById?task_id=\${encodeURIComponent(taskId)}`, {
@@ -920,7 +935,7 @@
      function confirmDelete() {
        if (!deleteTaskId) return
 
-       fetch(`\${contextPath}/DeleteTask`, {
+       fetch("<%= request.getContextPath() %>/DeleteTask", {
          method: "POST",
          headers: {
            "Content-Type": "application/json"
@@ -1124,7 +1139,7 @@
      }
 
      function openTaskModal(element) {
-         const taskId = element.getAttribute("data-task-id");
+       const taskId = element.getAttribute("data-task-id");
          console.log(taskId)
          openTaskModalForEdit(taskId);
      }
@@ -1576,6 +1591,7 @@
      function openAddCategoryModal() {
        document.getElementById("add-category-form").style.display = "block"
        const btnAdd = document.getElementById("btn-add-category")
+       btnAdd.style.display = "none";
      }
 
      function closeAddCategoryModal() {

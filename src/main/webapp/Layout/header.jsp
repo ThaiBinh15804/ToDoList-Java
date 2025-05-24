@@ -37,22 +37,34 @@
     display: inline-block;
     overflow: visible;
 }
-
 .dropdown-content, .notification-dropdown-content {
     display: none;
     position: absolute;
-    width: 360px; /* Increased for better readability */
-    max-height: 450px; /* Slightly taller for more content */
+    width: 360px; /* For notification */
+    max-height: 450px;
     overflow-y: auto;
     background-color: #ffffff;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.15); /* Deeper shadow */
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
     z-index: 1001;
-    border-radius: 10px; /* Softer corners */
+    border-radius: 10px;
     border: 1px solid #e0e0e0;
     top: 100%;
     margin-top: 12px;
-    padding: 12px; /* More internal spacing */
+    padding: 12px;
     right: 0;
+}
+.dropdown-content {
+    width: 200px; /* Smaller for user dropdown */
+}
+.dropdown-content a:hover, .notification-item:hover {
+    background-color: #e5e7eb;
+}
+.notification-item button {
+    cursor: pointer;
+}
+/* Add cursor for clickable dropdown triggers */
+.dropdown > div, .notification-dropdown .icon-btn {
+    cursor: pointer;
 }
 
 .notification-dropdown-content::-webkit-scrollbar {
@@ -339,36 +351,56 @@
 <% if (isAuthenticated) { %>
 <script>
     try {
-        // Log to verify script execution
         console.log('header.jsp script started');
 
-        // Toggle notification dropdown
-        document.querySelector('.notification-dropdown .icon-btn').addEventListener('click', function(event) {
-            console.log('Notification dropdown clicked');
-            const dropdown = document.getElementById('notificationDropdown');
-            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-            event.stopPropagation();
-        });
+        // Toggle dropdowns (user and notification)
+        function toggleDropdown(dropdownElement, contentSelector) {
+            const content = dropdownElement.querySelector(contentSelector);
+            const isOpen = content.style.display === 'block';
+            // Close all dropdowns first
+            document.querySelectorAll('.dropdown-content, .notification-dropdown-content').forEach(el => {
+                el.style.display = 'none';
+            });
+            // Toggle the clicked dropdown
+            content.style.display = isOpen ? 'none' : 'block';
+        }
 
-        // Toggle user dropdown
-        document.querySelector('.dropdown').addEventListener('click', function(event) {
-            console.log('User dropdown clicked');
-            const dropdownContent = this.querySelector('.dropdown-content');
-            dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
-            event.stopPropagation();
-        });
+        // User dropdown
+        const userDropdown = document.querySelector('.dropdown');
+        if (userDropdown) {
+            userDropdown.addEventListener('click', function(event) {
+                console.log('User dropdown clicked');
+                toggleDropdown(this, '.dropdown-content');
+                event.stopPropagation();
+            });
+        }
+
+        // Notification dropdown
+        const notificationDropdown = document.querySelector('.notification-dropdown .icon-btn');
+        if (notificationDropdown) {
+            notificationDropdown.addEventListener('click', function(event) {
+                console.log('Notification dropdown clicked');
+                toggleDropdown(this.closest('.notification-dropdown'), '.notification-dropdown-content');
+                event.stopPropagation();
+            });
+        }
 
         // Close dropdowns when clicking outside
         document.addEventListener('click', function(event) {
             console.log('Document clicked, checking dropdowns');
-            const notificationDropdown = document.querySelector('.notification-dropdown');
-            const userDropdown = document.querySelector('.dropdown');
-            if (!notificationDropdown.contains(event.target)) {
-                document.getElementById('notificationDropdown').style.display = 'none';
-            }
-            if (!userDropdown.contains(event.target)) {
+            if (!userDropdown?.contains(event.target)) {
                 userDropdown.querySelector('.dropdown-content').style.display = 'none';
             }
+            if (!notificationDropdown?.closest('.notification-dropdown').contains(event.target)) {
+                document.getElementById('notificationDropdown').style.display = 'none';
+            }
+        });
+
+        // Prevent dropdowns from closing when clicking inside
+        document.querySelectorAll('.dropdown-content, .notification-dropdown-content').forEach(dropdown => {
+            dropdown.addEventListener('click', function(event) {
+                event.stopPropagation();
+            });
         });
 
         // Sanitize text to prevent HTML/JavaScript injection
@@ -378,7 +410,6 @@
                 return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
             } catch (error) {
                 console.error('Error in sanitizeText:', error);
-                System.err.println('Error in sanitizeText: ' + error.message);
                 return '';
             }
         }
@@ -396,6 +427,19 @@
             }
         }
 
+        // Format date/time to DD/MM/YYYY, HH:mm
+        function formatVietnameseDateTime(date) {
+            if (!date || isNaN(date)) return 'N/A';
+            return date.toLocaleString('vi-VN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            });
+        }
+
         // Complete task via AJAX
         function completeTask(taskId, notificationDiv) {
             try {
@@ -404,7 +448,6 @@
                     showFeedback(notificationDiv, "Mã công việc không hợp lệ!", true);
                     return;
                 }
-
                 console.log(`Completing task ${taskId}`);
                 const taskData = { task_id: taskId, status: "Hoàn thành" };
                 fetch('<%= contextPath %>/CompleteTask', {
@@ -436,7 +479,7 @@
                         return response.json();
                     })
                     .then(data => {
-                        if (!data) return; // Early return if redirected
+                        if (!data) return;
                         console.log('Complete response:', data);
                         if (data.message && data.message.includes("thành công")) {
                             showFeedback(notificationDiv, 'Công việc đã hoàn thành!', false);
@@ -471,18 +514,16 @@
                         if (!response.ok) {
                             throw new Error(`HTTP error! Status: ${response.status}`);
                         }
-                        // DeleteTaskServlet doesn't return JSON, assume success on 200
                         showFeedback(notificationDiv, 'Công việc đã được xóa!');
                         setTimeout(fetchNotifications, 1000);
                     })
                     .catch(error => {
                         console.error('Error deleting task:', error);
-                        System.err.println('Error deleting task ' + taskId + ': ' + error.message);
                         showFeedback(notificationDiv, 'Lỗi khi xóa công việc', true);
                     });
             } catch (error) {
                 console.error('Error in deleteTask:', error);
-                System.err.println('Error in deleteTask: ' + error.message);
+                showFeedback(notificationDiv, 'Lỗi khi xóa công việc', true);
             }
         }
 
@@ -490,11 +531,9 @@
         function editTask(taskId, notificationDiv) {
             try {
                 console.log(`Editing task ${taskId}`);
-                // Redirect to MyTask.jsp with taskId as query parameter
                 window.location.href = '<%= contextPath %>/MyTask?editTaskId=' + encodeURIComponent(taskId);
             } catch (error) {
                 console.error('Error in editTask:', error);
-                // Use Toastify for consistency with MyTask.jsp
                 Toastify({
                     text: "❌ Lỗi khi mở chỉnh sửa công việc!",
                     duration: 2000,
@@ -532,7 +571,6 @@
                     })
                     .catch(error => {
                         console.error('Error fetching notifications:', error);
-                        System.err.println('Fetch error in header.jsp: ' + error.message);
                         if (document.getElementById('notificationDropdown')) {
                             document.getElementById('notificationDropdown').innerHTML =
                                 '<div class="notification-item"><p>Lỗi khi tải thông báo!</p></div>';
@@ -540,7 +578,6 @@
                     });
             } catch (error) {
                 console.error('Error in fetchNotifications:', error);
-                System.err.println('Fetch error in header.jsp: ' + error.message);
             }
         }
 
@@ -553,7 +590,6 @@
                 const dropdown = document.getElementById('notificationDropdown');
                 if (!dropdown) {
                     console.error('notificationDropdown element not found');
-                    System.err.println('notificationDropdown element not found in displayNotifications');
                     return;
                 }
                 dropdown.innerHTML = '';
@@ -564,14 +600,12 @@
                 }
                 notifications.forEach((notification, index) => {
                     try {
-                        // console.log(`Processing notification ${index}:`, notification);
                         if (!notification) {
                             console.warn(`Notification ${index} is null or undefined`);
                             return;
                         }
                         const div = document.createElement('div');
                         div.className = 'notification-item';
-                        // Validate date fields
                         const startTime = notification.start_time ? new Date(notification.start_time) : null;
                         const endTime = notification.end_time ? new Date(notification.end_time) : null;
                         if (notification.start_time && isNaN(startTime)) {
@@ -580,7 +614,6 @@
                         if (notification.end_time && isNaN(endTime)) {
                             console.warn(`Invalid end_time for notification ${index}:`, notification.end_time);
                         }
-                        // Render notification with conditional buttons
                         let buttonsHtml = '';
                         if (notification.type && notification.type.includes('OVERDUE')) {
                             buttonsHtml += '<button class="edit" onclick="editTask(\'' + sanitizeText(notification.task_id) + '\', this.parentElement.parentElement)">Chỉnh sửa</button>';
@@ -594,18 +627,18 @@
                         div.innerHTML =
                             '<h4>' + (sanitizeText(notification.title) || 'Không có tiêu đề') + '</h4>' +
                             '<p>' + (sanitizeText(notification.description) || 'Không có mô tả') + '</p>' +
-                            '<p><strong>Bắt đầu:</strong> ' + (startTime && !isNaN(startTime) ? startTime.toLocaleString('vi-VN') : 'N/A') + '</p>' +
-                            '<p><strong>Kết thúc:</strong> ' + (endTime && !isNaN(endTime) ? endTime.toLocaleString('vi-VN') : 'N/A') + '</p>' +
+                            '<div class="time-info">' +
+                            '<p><strong>Bắt đầu:</strong> ' + formatVietnameseDateTime(startTime) + '</p>' +
+                            '<p><strong>Kết thúc:</strong> ' + formatVietnameseDateTime(endTime) + '</p>' +
+                            '</div>' +
                             (buttonsHtml ? '<div class="buttons">' + buttonsHtml + '</div>' : '');
                         dropdown.appendChild(div);
                     } catch (error) {
-                        console.error(`Error processing notification ${index}:`, error, notification);
-                        System.err.println(`Error processing notification ${index} in displayNotifications: ${error.message}`);
+                        console.error(`Error processing notification ${index}:`, error);
                     }
                 });
             } catch (error) {
                 console.error('Error in displayNotifications:', error);
-                System.err.println('Error in displayNotifications: ' + error.message);
                 if (document.getElementById('notificationDropdown')) {
                     document.getElementById('notificationDropdown').innerHTML =
                         '<div class="notification-item"><p>Lỗi khi hiển thị thông báo!</p></div>';
@@ -617,7 +650,6 @@
         window.addEventListener('load', () => setTimeout(fetchNotifications, 1000));
     } catch (error) {
         console.error('Error in header.jsp script:', error);
-        System.err.println('Client-side error in header.jsp: ' + error.message);
     }
 </script>
 <% } %>

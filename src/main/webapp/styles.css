@@ -106,7 +106,6 @@ body {
 .main-content {
     width: 85%; /* 70% chiều rộng */
     background-color: white;
-    overflow-y: auto; /* Cuộn nếu nội dung dài */
 }
 
 .main-content h1 {
@@ -117,6 +116,10 @@ body {
 
 .header {
     width: 100%;
+    position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 10;
     display: flex;
     justify-content: space-between;
     align-items: center;

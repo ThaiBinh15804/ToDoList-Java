@@ -17,10 +17,10 @@
 <body>
     <div class="container">
         <div class="sidebar">
-            <div class="logo">
+            <a class="logo" href="<%= contextPath %>/DashBoard" >
                 <img src="<%= contextPath %>/Assets/Thuan/images/todo-high-resolution-logo.png" alt="HoPR Logo"
                 style="width: 100px;">
-            </div>
+            </a>
             <ul class="menu">
                 <li>
                     <a href="<%= contextPath %>/DashBoard"
@@ -70,7 +70,7 @@
             </ul>
         </div>
 
-        <div class="main-content">
+        <div class="main-content" style="position: relative">
             <jsp:include page="/Layout/header.jsp" />
             <% String cp = (String) request.getAttribute("contentPage"); %>
 

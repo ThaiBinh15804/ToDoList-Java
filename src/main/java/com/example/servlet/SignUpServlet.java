@@ -11,6 +11,8 @@ import javax.servlet.annotation.WebServlet;
 public class SignUpServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");  // Thêm dòng này
+        response.setContentType("text/html; charset=UTF-8");
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
         String username = request.getParameter("username");

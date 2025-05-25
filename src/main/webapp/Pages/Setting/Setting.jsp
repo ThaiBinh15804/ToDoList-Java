@@ -11,8 +11,9 @@
 <style>
     .content {
         background-color: white;
-        padding: 40px;
-        margin: 40px auto;
+        border: 1px solid #dadada;
+        padding: 20px;
+        margin: 5px auto;
         border-radius: 12px;
         box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         width: 70%;
@@ -32,7 +33,7 @@
     /* Các phần còn lại giữ nguyên */
     .content h2 {
         text-align: center;
-        font-size: 24px;
+        font-size: 22px;
         margin-bottom: 20px;
     }
 
@@ -50,7 +51,7 @@
         display: block;
         margin-bottom: 8px;
         font-size: 16px;
-        font-weight: bold;
+        font-weight: 500;
     }
 
     .form-group input {
@@ -69,12 +70,12 @@
     }
 
     .buttons button {
-        padding: 12px 30px;
+        padding: 12px 15px;
         border: none;
         border-radius: 6px;
         cursor: pointer;
-        font-size: 16px;
-        font-weight: bold;
+        font-size: 15px;
+        font-weight: semibold;
     }
 
     .buttons .update {
@@ -166,6 +167,29 @@
             width: 0%;
         }
     }
+
+    .avatar-upload input[type="file"] {
+        display: none;
+    }
+
+    /* Tùy chỉnh nút upload */
+    .custom-file-upload {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 15px;
+        font-weight: 600;
+        color: white;
+        background-color: #0466c8;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .custom-file-upload:hover {
+        background-color: #303f9f;
+        transform: translateY(-1px);
+    }
 </style>
 
 <div class="content">
@@ -173,28 +197,30 @@
     <img id="avatar-preview" src="<%= contextPath + (user.avatar != null && !user.avatar.isEmpty() ? "/Assets/Khanh/images/" + user.avatar + "?t=" + System.currentTimeMillis() : "/Assets/Khanh/images/avatar.jpg") %>" alt="Avatar" onerror="this.src='<%= contextPath %>/Assets/Khanh/images/haha.jpg';">
     <form action="<%= contextPath %>/UpdateSettings" method="post" enctype="multipart/form-data">
         <div class="avatar-upload">
-            <input type="file" id="avatar-input" name="avatar" accept="image/jpeg,image/png,image/gif">
+            <label for="avatar-input" class="custom-file-upload">Chọn ảnh đại diện</label>
+            <span id="file-name" style="margin-left: 10px; font-style: italic; color: #555; display: block; margin-top: 10px;"></span>
+            <input type="file" id="avatar-input" name="avatar" accept="image/jpeg,image/png,image/gif" style="display:none;">
         </div>
         <div class="form-group">
-            <label>TÊN NGƯỜI DÙNG</label>
+                    <label>Tên tài khoản</label>
+                    <input type="text" name="username" value="<%= user.username %>" readonly disabled>
+        </div>
+        <div class="form-group">
+            <label>Tên người dùng</label>
             <input type="text" name="fullname" value="<%= user.fullname %>" required>
         </div>
         <div class="form-group">
-            <label>TÊN TÀI KHOẢN</label>
-            <input type="text" name="username" value="<%= user.username %>" readonly disabled>
-        </div>
-        <div class="form-group">
-            <label>EMAIL</label>
+            <label>Emnail</label>
             <input type="email" name="email" value="<%= user.email %>" required>
         </div>
         <div class="form-group">
-            <label>SỐ ĐIỆN THOẠI</label>
+            <label>Số điện thoại</label>
             <% String phoneValue = user.phone != null ? user.phone : ""; %>
             <input type="text" name="phone" value="<%= phoneValue %>">
         </div>
         <div class="buttons">
-            <button type="submit" class="update">CẬP NHẬT</button>
-            <button type="button" class="change-password" onclick="window.location.href='<%= contextPath %>/ChangePassword'">THAY ĐỔI MẬT KHẨU</button>
+            <button type="submit" class="update">Cập nhật</button>
+            <button type="button" class="change-password" onclick="window.location.href='<%= contextPath %>/ChangePassword'">Thay đổi mật khẩu</button>
         </div>
     </form>
 
@@ -222,3 +248,16 @@
         </div>
     <% } %>
 </div>
+
+<script>
+    const inputFile = document.getElementById('avatar-input');
+    const fileNameDisplay = document.getElementById('file-name');
+
+    inputFile.addEventListener('change', function() {
+        if (this.files && this.files.length > 0) {
+            fileNameDisplay.textContent = this.files[0].name;
+        } else {
+            fileNameDisplay.textContent = '';
+        }
+    });
+</script>

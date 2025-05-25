@@ -131,11 +131,11 @@ body {
 }
 
 .header-middle {
-    width: 55%;
+    width: 50%;
 }
 
 .header-right {
-    width: 20%;
+    width: 25%;
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -211,6 +211,11 @@ body {
     margin-bottom: 15px;
     border: 2px solid #334977;
     cursor: pointer;
+    transition: all 0.1s linear;
+}
+
+.task-card:hover {
+    transform: scale(1.03);
 }
 
 .task-card:last-of-type {

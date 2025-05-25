@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <% String contextPath = request.getContextPath(); %>
 <!DOCTYPE html>
 <html>
@@ -19,7 +19,6 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            padding: 20px;
         }
         .login-box {
             display: flex;

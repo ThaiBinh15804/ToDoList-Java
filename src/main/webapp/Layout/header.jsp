@@ -1,5 +1,4 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-
 <%
     String contextPath = request.getContextPath();
     String currentPath = (String) request.getAttribute("currentPath");
@@ -37,32 +36,62 @@
     display: inline-block;
     overflow: visible;
 }
+
+.dropdown .triangle {
+     display: none;
+     position: absolute;
+     top: 53px;
+     left: 50%;
+     transform: translateX(-50%);
+     border-left: 10px solid transparent;
+     border-right: 10px solid transparent;
+     border-bottom: 10px solid #e5e7eb;
+     z-index: 1002;
+     border-bottom: 11px solid #d3d3d3;
+}
+
 .dropdown-content, .notification-dropdown-content {
     display: none;
     position: absolute;
-    width: 360px; /* For notification */
-    max-height: 450px;
     overflow-y: auto;
     background-color: #ffffff;
     box-shadow: 0 6px 16px rgba(0,0,0,0.15);
     z-index: 1001;
     border-radius: 10px;
     border: 1px solid #e0e0e0;
-    top: 100%;
-    margin-top: 12px;
-    padding: 12px;
+    top: 64px;
     right: 0;
 }
-.dropdown-content {
-    width: 200px; /* Smaller for user dropdown */
+
+.notification-dropdown-content {
+    top: 45px;
 }
+
+.notification-dropdown .triangle-2 {
+    display: none;
+    position: absolute;
+    top: 34px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #e5e7eb;
+    z-index: 1002;
+    border-bottom: 11px solid #d3d3d3;
+}
+
 .dropdown-content a:hover, .notification-item:hover {
     background-color: #e5e7eb;
 }
+
+ .notification-item:hover .time-info p {
+    background-color: #fff;
+}
+
 .notification-item button {
     cursor: pointer;
 }
-/* Add cursor for clickable dropdown triggers */
+
 .dropdown > div, .notification-dropdown .icon-btn {
     cursor: pointer;
 }
@@ -80,56 +109,9 @@
     background: #9ca3af;
 }
 
-.notification-dropdown-content::before, .notification-dropdown-content::after {
-    content: '';
-    position: absolute;
-    top: -10px;
-    right: 20px; /* Align with bell icon */
-    transform: none;
-}
-
-.notification-dropdown-content::before {
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-bottom: 10px solid #e0e0e0;
-    z-index: 1002;
-}
-
-.notification-dropdown-content::after {
-    border-left: 11px solid transparent;
-    border-right: 11px solid transparent;
-    border-bottom: 11px solid #ffffff;
-    z-index: 1003;
-}
-
-.dropdown-content {
-    width: 200px;
-    right: 0;
-}
-
-.dropdown-content::before, .dropdown-content::after {
-    content: '';
-    position: absolute;
-    top: -8px;
-    left: 50%;
-    transform: translateX(-50%);
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-}
-
-.dropdown-content::before {
-    border-bottom: 10px solid #e5e7eb;
-    z-index: 1002;
-}
-
-.dropdown-content::after {
-    border-bottom: 11px solid #d3d3d3;
-    z-index: 1000;
-}
-
 .dropdown-content a, .notification-item {
     color: #333;
-    padding: 12px 16px;
+    padding: 14px 12px;
     text-decoration: none;
     display: flex;
     flex-direction: column;
@@ -138,7 +120,6 @@
     font-weight: 500;
     transition: background-color 0.2s ease, transform 0.1s ease;
     border-radius: 6px; /* Rounded items */
-    margin: 0 8px; /* Internal margin */
 }
 
 .dropdown-content a {
@@ -147,9 +128,10 @@
 }
 
 .notification-item {
-    background: #f9fafb; /* Light background for contrast */
-    border: 1px solid #e5e7eb; /* Subtle border */
-    margin-bottom: 8px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    padding: 12px;
+    width: 300px;
 }
 
 .notification-item:hover {
@@ -199,7 +181,7 @@
 .notification-item .time-info p {
     margin: 0;
     padding: 6px 8px;
-    background: #f1f5f9; /* Light background */
+    background: #e5e7eb; /* Light background */
     border-radius: 4px;
 }
 
@@ -212,15 +194,14 @@
     display: flex;
     justify-content: flex-end; /* Right-align buttons */
     gap: 10px;
-    margin-top: 10px;
 }
 
 .notification-item button {
-    padding: 8px 16px; /* Larger buttons */
+    padding: 8px 12px; /* Larger buttons */
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     transition: background-color 0.2s ease, transform 0.1s ease;
 }
@@ -313,6 +294,7 @@
             <p style="color: red;">Vui lòng <a href="<%= contextPath %>/Login">đăng nhập</a>.</p>
         <% } else { %>
             <div class="notification-dropdown">
+                <span class="triangle-2"></span>
                 <button class="icon-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                          stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -326,13 +308,14 @@
                 </div>
             </div>
             <div class="dropdown">
-                <div style="background-color: #0466c8; padding: 8px 16px; border-radius: 99px; display: flex; align-items: center; column-gap: 20px; cursor: pointer;">
+                <div style="background-color: #0466c8; padding: 8px 12px; border-radius: 99px; display: flex; align-items: center; column-gap: 10px; cursor: pointer;">
                     <img src="<%= contextPath + userAvatar %>?t=<%= System.currentTimeMillis() %>" class="avatar" alt="avatar">
                     <div style="display: flex; flex-direction: column;">
                         <span style="font-size: 15px; color: #f2f2f2">Xin chào,</span>
                         <span style="font-size: 15px; color: #f2f2f2; font-weight: 600; display: block"><%= userFullname %></span>
                     </div>
                 </div>
+                <span class="triangle"></span>
                 <div class="dropdown-content">
                     <a href="<%= contextPath %>/Setting">
                         <img src="<%= contextPath %>/Assets/Khanh/images/setting2.svg" alt="Account Icon">
@@ -351,26 +334,26 @@
 <% if (isAuthenticated) { %>
 <script>
     try {
-        console.log('header.jsp script started');
-
-        // Toggle dropdowns (user and notification)
-        function toggleDropdown(dropdownElement, contentSelector) {
-            const content = dropdownElement.querySelector(contentSelector);
-            const isOpen = content.style.display === 'block';
-            // Close all dropdowns first
-            document.querySelectorAll('.dropdown-content, .notification-dropdown-content').forEach(el => {
+        function toggleDropdown(...selectors) {
+            document.querySelectorAll('.dropdown-content, .notification-dropdown-content, .triangle, .triangle-2').forEach(el => {
                 el.style.display = 'none';
             });
-            // Toggle the clicked dropdown
-            content.style.display = isOpen ? 'none' : 'block';
+
+            // Toggle các selector được truyền vào
+            const isOpen = document.querySelector(selectors[0])?.style.display === 'block';
+            if (!isOpen) {
+                selectors.forEach(selector => {
+                    const el = document.querySelector(selector);
+                    if (el) el.style.display = 'block';
+                });
+            }
         }
 
         // User dropdown
         const userDropdown = document.querySelector('.dropdown');
         if (userDropdown) {
             userDropdown.addEventListener('click', function(event) {
-                console.log('User dropdown clicked');
-                toggleDropdown(this, '.dropdown-content');
+                toggleDropdown('.dropdown-content', '.triangle');
                 event.stopPropagation();
             });
         }
@@ -379,27 +362,15 @@
         const notificationDropdown = document.querySelector('.notification-dropdown .icon-btn');
         if (notificationDropdown) {
             notificationDropdown.addEventListener('click', function(event) {
-                console.log('Notification dropdown clicked');
-                toggleDropdown(this.closest('.notification-dropdown'), '.notification-dropdown-content');
+                toggleDropdown('.notification-dropdown-content', '.triangle-2');
                 event.stopPropagation();
             });
         }
 
-        // Close dropdowns when clicking outside
-        document.addEventListener('click', function(event) {
-            console.log('Document clicked, checking dropdowns');
-            if (!userDropdown?.contains(event.target)) {
-                userDropdown.querySelector('.dropdown-content').style.display = 'none';
-            }
-            if (!notificationDropdown?.closest('.notification-dropdown').contains(event.target)) {
-                document.getElementById('notificationDropdown').style.display = 'none';
-            }
-        });
-
-        // Prevent dropdowns from closing when clicking inside
-        document.querySelectorAll('.dropdown-content, .notification-dropdown-content').forEach(dropdown => {
-            dropdown.addEventListener('click', function(event) {
-                event.stopPropagation();
+        // Đóng dropdown khi click bên ngoài
+        document.addEventListener('click', function () {
+            document.querySelectorAll('.dropdown-content, .notification-dropdown-content, .triangle, .triangle-2').forEach(el => {
+                el.style.display = 'none';
             });
         });
 
@@ -595,7 +566,7 @@
                 dropdown.innerHTML = '';
                 if (notifications.length === 0) {
                     console.log('No notifications to display');
-                    dropdown.innerHTML = '<div class="notification-item"><p>Không có thông báo mới.</p></div>';
+                    dropdown.innerHTML = '<div class="notification-item"><p style="text-align: center";>Không có thông báo mới.</p></div>';
                     return;
                 }
                 notifications.forEach((notification, index) => {

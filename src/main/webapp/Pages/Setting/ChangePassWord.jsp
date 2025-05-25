@@ -11,7 +11,8 @@
 <style>
     .content {
         background-color: white;
-        padding: 40px;
+        border: 1px solid #dadada;
+        padding: 20px;
         margin: 40px auto;
         border-radius: 12px;
         box-shadow: 0 4px 8px rgba(0,0,0,0.2);
@@ -69,12 +70,12 @@
         gap: 15px;
     }
     .buttons button {
-        padding: 12px 30px;
+        padding: 12px 15px;
         border: none;
         border-radius: 6px;
         cursor: pointer;
-        font-size: 16px;
-        font-weight: bold;
+        font-size: 15px;
+        font-weight: 500;
     }
     .buttons .update {
         background-color: #ff9800;
@@ -164,33 +165,32 @@
 
 <div class="content">
     <a href="<%= contextPath %>/Setting" class="go-back">Quay lại</a>
-    <h2>ĐỔI MẬT KHẨU</h2>
-    <img id="avatar-preview" src="<%= contextPath + (user.avatar != null && !user.avatar.isEmpty() ? "/Assets/Khanh/images/" + user.avatar + "?t=" + System.currentTimeMillis() : "/Assets/Khanh/images/avatar.jpg") %>" alt="Avatar" onerror="this.src='<%= contextPath %>/Assets/Khanh/images/haha.jpg';">
+     <h2 style="text-align: center; margin-top: 30px;">ĐỔI MẬT KHẨU</h2>
     <form action="<%= contextPath %>/ChangePassword" method="post">
         <div class="form-group">
-            <label>MẬT KHẨU HIỆN TẠI</label>
+            <label>Mật khẩu hiện tại</label>
             <input type="password" name="currentPassword" id="currentPassword" required>
             <span class="eye-icon" onclick="togglePassword('currentPassword', this)">
                 <i class="fas fa-eye"></i>
             </span>
         </div>
         <div class="form-group">
-            <label>MẬT KHẨU MỚI</label>
+            <label>Mật khẩu mới</label>
             <input type="password" name="newPassword" id="newPassword" required>
             <span class="eye-icon" onclick="togglePassword('newPassword', this)">
                 <i class="fas fa-eye"></i>
             </span>
         </div>
         <div class="form-group">
-            <label>XÁC NHẬN MẬT KHẨU</label>
+            <label>Xác thực mật khẩu</label>
             <input type="password" name="confirmPassword" id="confirmPassword" required>
             <span class="eye-icon" onclick="togglePassword('confirmPassword', this)">
                 <i class="fas fa-eye"></i>
             </span>
         </div>
         <div class="buttons">
-            <button type="submit" class="update">CẬP NHẬT MẬT KHẨU</button>
-            <button type="button" class="cancel" onclick="window.location.href='<%= contextPath %>/Setting'">HỦY</button>
+            <button type="submit" class="update">Cập nhật mật khẩu</button>
+            <button type="button" class="cancel" onclick="window.location.href='<%= contextPath %>/Setting'">Hủy</button>
         </div>
     </form>
 

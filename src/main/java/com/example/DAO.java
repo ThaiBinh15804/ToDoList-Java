@@ -300,6 +300,7 @@ public class DAO {
     public List<Category> getAllCategoriesByUserId(String user_id) {
         List<Category> categories = new ArrayList<>();
         String query = "SELECT * FROM categories WHERE user_id = ?";
+        System.out.println("Running query: SELECT * FROM categories WHERE user_id = '" + user_id + "'");
 
         try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(query)) {
             stmt.setString(1, user_id);

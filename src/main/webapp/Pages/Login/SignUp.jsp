@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <% String contextPath = request.getContextPath(); %>
 <!DOCTYPE html>
 <html>
@@ -19,16 +19,15 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            padding: 20px;
         }
         .signup-box {
             display: flex;
             background-color: white;
             border-radius: 16px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            max-width: 1200px;
+            max-width: 1000px;
             width: 100%;
-            min-height: 700px;
+            min-height: 500px;
             overflow: hidden;
         }
         .illustration {
@@ -45,7 +44,7 @@
             object-fit: contain;
         }
         .signup-form {
-            padding: 50px;
+            padding: 20px;
             width: 50%;
         }
         .signup-form h2 {

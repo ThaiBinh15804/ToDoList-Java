@@ -3,7 +3,8 @@ package com.example;
 import java.sql.*;
 
 public class DBConnect {
-    private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=TODOListDB;encrypt=true;trustServerCertificate=true";
+//    private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=TODOListDB;encrypt=true;trustServerCertificate=true";
+    private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=TODOListDB;encrypt=true;trustServerCertificate=true;sendStringParametersAsUnicode=true";
     private static final String USER = "sa"; // Replace with your DB username
     private static final String PASSWORD = "123"; // Replace with your DB password
     private Connection connection;

@@ -58,7 +58,6 @@ public class GetTasksFilterAndSortServlet extends HttpServlet {
             // Trả kết quả JSON về client
             JSONArray jsonTasks = new JSONArray();
             for (TaskWithCategory item : tasks) {
-                System.out.println("Task ID: " + item.task.task_id);
                 JSONObject taskObj = new JSONObject();
                 JSONObject taskData = new JSONObject();
                 Task task = item.task;

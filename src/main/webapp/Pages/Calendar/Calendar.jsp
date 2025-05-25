@@ -534,32 +534,51 @@
                 eventClick: function(info) {
                     console.log(info);
                     currentTaskId = info.event._def.publicId;
-                    document.getElementById('task-title').textContent = info.event.title;
-                    document.getElementById('task-category').textContent = info.event.extendedProps.category_name || 'Không có';
-                    document.getElementById('task-start').textContent = info.event.start.toLocaleString('vi-VN', {
+
+                    const startFormatted = info.event.start.toLocaleString('vi-VN', {
                         year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false
                     });
-                    document.getElementById('task-end').textContent = info.event.end ? info.event.end.toLocaleString('vi-VN', {
+                    const endFormatted = info.event.end ? info.event.end.toLocaleString('vi-VN', {
                         year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false
-                    }) : 'Không có';
+                    }) : '';
+
+                    // Chi tiết công việc
+                    document.getElementById('task-title').textContent = info.event.title || 'Không có';
+                    document.getElementById('task-category').textContent = info.event.extendedProps.category_name || 'Không có';
+                    document.getElementById('task-start').textContent = startFormatted || 'Không có';
+                    document.getElementById('task-end').textContent = endFormatted || 'Không có';
                     document.getElementById('task-status').textContent = info.event.extendedProps.status || 'Không có';
                     document.getElementById('task-status').className = 'value status ' + (info.event.extendedProps.status || 'none').toLowerCase().replace(' ', '-');
                     document.getElementById('task-priority').textContent = info.event.extendedProps.priority || 'Không có';
                     document.getElementById('task-priority').className = 'value priority ' + (info.event.extendedProps.priority || 'none').toLowerCase();
                     document.getElementById('task-description').textContent = info.event.extendedProps.description || 'Không có';
 
-                    // Điền dữ liệu cho form chỉnh sửa
-                    document.getElementById('edit-task-title').value = info.event.title;
+                    // Form chỉnh sửa
+                    document.getElementById('edit-task-title').value = info.event.title || '';
                     document.getElementById('edit-task-category').value = info.event.extendedProps.category_id || '';
-                    document.getElementById('edit-task-start').value = info.event.start.toLocaleString('vi-VN', {
-                        year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false
-                    });
-                    document.getElementById('edit-task-end').value = info.event.end.toLocaleString('vi-VN', {
-                        year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false
-                    });
                     document.getElementById('edit-task-status').value = info.event.extendedProps.status || 'Chưa bắt đầu';
                     document.getElementById('edit-task-priority').value = info.event.extendedProps.priority || 'Thấp';
                     document.getElementById('edit-task-description').value = info.event.extendedProps.description || '';
+
+                    // Set flatpickr values
+                    const startPicker = document.getElementById('edit-task-start')._flatpickr;
+                    const endPicker = document.getElementById('edit-task-end')._flatpickr;
+
+                    if (startFormatted && info.event.start) {
+                        startPicker.setDate(info.event.start, false, 'H:i, d/m/Y');
+                        document.getElementById('edit-task-start').dataset.isoDate = info.event.start.toISOString().slice(0, 19);
+                    } else {
+                        startPicker.clear();
+                        document.getElementById('edit-task-start').dataset.isoDate = '';
+                    }
+
+                    if (endFormatted && info.event.end) {
+                        endPicker.setDate(info.event.end, false, 'H:i, d/m/Y');
+                        document.getElementById('edit-task-end').dataset.isoDate = info.event.end.toISOString().slice(0, 19);
+                    } else {
+                        endPicker.clear();
+                        document.getElementById('edit-task-end').dataset.isoDate = '';
+                    }
 
                     document.getElementById('task-overlay').style.display = 'flex';
                     switchToDetailMode();
@@ -570,7 +589,6 @@
             });
             calendar.render();
 
-            // Tích hợp flatpickr vào tiêu đề lịch
             // Tích hợp flatpickr vào tiêu đề lịch
             var titleElement = document.querySelector('.fc-toolbar-title');
             flatpickr(titleElement, {
@@ -598,30 +616,39 @@
             });
 
             // Khởi tạo flatpickr cho create-task và edit-task
-            flatpickr('#create-task-start', {
+            const vietnameseDateTimeFormat = {
                 enableTime: true,
-                dateFormat: 'Y-m-d\\TH:i',
+                dateFormat: 'H:i, d/m/Y', // Định dạng DD/MM/YYYY, HH:mm
                 time_24hr: true,
-                locale: { firstDayOfWeek: 1 }
-            });
-            flatpickr('#create-task-end', {
-                enableTime: true,
-                dateFormat: 'Y-m-d\\TH:i',
-                time_24hr: true,
-                locale: { firstDayOfWeek: 1 }
-            });
-            flatpickr('#edit-task-start', {
-                enableTime: true,
-                dateFormat: 'Y-m-d\\TH:i',
-                time_24hr: true,
-                locale: { firstDayOfWeek: 1 }
-            });
-            flatpickr('#edit-task-end', {
-                enableTime: true,
-                dateFormat: 'Y-m-d\\TH:i',
-                time_24hr: true,
-                locale: { firstDayOfWeek: 1 }
-            });
+                locale: {
+                    firstDayOfWeek: 1,
+                    weekdays: {
+                        shorthand: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
+                        longhand: ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy']
+                    },
+                    months: {
+                        shorthand: ['Th1', 'Th2', 'Th3', 'Th4', 'Th5', 'Th6', 'Th7', 'Th8', 'Th9', 'Th10', 'Th11', 'Th12'],
+                        longhand: ['Tháng Một', 'Tháng Hai', 'Tháng Ba', 'Tháng Tư', 'Tháng Năm', 'Tháng Sáu', 'Tháng Bảy', 'Tháng Tám', 'Tháng Chín', 'Tháng Mười', 'Tháng Mười Một', 'Tháng Mười Hai']
+                    }
+                },
+                altInput: true,
+                altFormat: 'H:i, d/m/Y', // Match dateFormat
+                defaultHour: 0,
+                defaultMinute: 0,
+                onChange: function(selectedDates, dateStr, instance) {
+                    if (selectedDates.length > 0) {
+                        const isoDate = selectedDates[0].toISOString().slice(0, 19);
+                        instance.element.dataset.isoDate = isoDate;
+                    } else {
+                        instance.element.dataset.isoDate = '';
+                    }
+                }
+            };
+
+            flatpickr('#create-task-start', { ...vietnameseDateTimeFormat });
+            flatpickr('#create-task-end', { ...vietnameseDateTimeFormat });
+            flatpickr('#edit-task-start', { ...vietnameseDateTimeFormat });
+            flatpickr('#edit-task-end', { ...vietnameseDateTimeFormat });
 
             // Lấy danh mục từ server
             fetchCategories();
@@ -647,10 +674,13 @@
         function openCreateTaskOverlay(date) {
             var startDate = new Date(date);
             startDate.setHours(0, 0, 0, 0);
-            document.getElementById('create-task-start').value = startDate.toLocaleString('sv-SE', {
-                year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+            const startFormatted = startDate.toLocaleString('vi-VN', {
+                year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false
             });
+            document.getElementById('create-task-start').value = startFormatted;
+            document.getElementById('create-task-start').dataset.isoDate = startDate.toISOString().slice(0, 19);
             document.getElementById('create-task-end').value = '';
+            document.getElementById('create-task-end').dataset.isoDate = '';
             document.getElementById('create-task-title').value = '';
             document.getElementById('create-task-description').value = '';
             document.getElementById('create-task-status').value = 'Chưa bắt đầu';
@@ -690,7 +720,17 @@
         function createTask() {
             var title = document.getElementById('create-task-title').value.trim();
             if (!title) {
-                alert('Vui lòng nhập tiêu đề công việc.');
+                showToast('❌ Vui lòng nhập tiêu đề công việc.', true);
+                return;
+            }
+
+            const startInput = document.getElementById('create-task-start');
+            const endInput = document.getElementById('create-task-end');
+            const startTime = startInput.dataset.isoDate;
+            const endTime = endInput.dataset.isoDate || null;
+
+            if (!startTime) {
+                showToast('❌ Vui lòng chọn thời gian bắt đầu.', true);
                 return;
             }
 
@@ -700,8 +740,8 @@
                 description: document.getElementById('create-task-description').value.trim() || null,
                 status: document.getElementById('create-task-status').value,
                 priority: document.getElementById('create-task-priority').value,
-                start_time: document.getElementById('create-task-start').value,
-                end_time: document.getElementById('create-task-end').value ? document.getElementById('create-task-end').value : null
+                start_time: startTime,
+                end_time: endTime
             };
 
             fetch('/ToDoList/createTask', {
@@ -711,31 +751,33 @@
                 },
                 body: JSON.stringify(task)
             })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(data => {
-                        throw new Error(data.error || 'Failed to create task');
-                    });
-                }
-                return response.json();
-            })
-            .then(data => {
-                alert(data.message || 'Tạo công việc thành công!');
-                closeOverlay('create-task-overlay');
-                window.location.reload();
-            })
-            .catch(error => {
-                console.error('Error creating task:', error);
-                alert('Không thể tạo công việc: ' + error.message);
-            });
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(data => {
+                            throw new Error(data.error || 'Failed to create task');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    showToast('✅ ' + (data.message || 'Tạo công việc thành công!'), false);
+                    closeOverlay('create-task-overlay');
+                    window.location.reload();
+                })
+                .catch(error => {
+                    console.error('Error creating task:', error);
+                    showToast('❌ Không thể tạo công việc: ' + error.message, true);
+                });
         }
 
         function updateTask() {
             try {
                 // Get form values
                 const title = document.getElementById('edit-task-title').value.trim();
-                const startTime = document.getElementById('edit-task-start').value;
-                const endTime = document.getElementById('edit-task-end').value;
+                const startInput = document.getElementById('edit-task-start');
+                const endInput = document.getElementById('edit-task-end');
+                const startTime = startInput.dataset.isoDate;
+                const endTime = endInput.dataset.isoDate || null;
                 const status = document.getElementById('edit-task-status').value;
                 const priority = document.getElementById('edit-task-priority').value;
 
@@ -792,7 +834,7 @@
                     status: status,
                     priority: priority,
                     start_time: startTime,
-                    end_time: endTime || null
+                    end_time: endTime
                 };
 
                 // Send update request

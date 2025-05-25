@@ -36,7 +36,7 @@
           <span style="font-size: 14px; color: #8d99ae">Hôm nay</span>
         </div>
 
-        <div style="box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); margin-top: 10px; padding: 12px; border-radius: 10px; background-color: #C4D0EB">
+        <div style="box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); margin-top: 10px; border-radius: 10px;">
                     <%
                       if (taskWithCategoryList == null || taskWithCategoryList.isEmpty()) {
                     %>
@@ -60,7 +60,7 @@
                               priorityColor = "#dadada";
                             }
                     %>
-                      <div class="task-card" data-task-id="<%= task.task_id != null ? task.task_id : "" %>" onclick="openTaskModal(this)">
+                      <div class="task-card" data-task-id="<%= task.task_id != null ? task.task_id : "" %>" onclick="navigateTask('<%= task.task_id %>')">
                         <h2 style="font-size: 18px; font-weight: 500; line-height: 12px;">
                           <%= task.title != null ? task.title : "N/A" %>
                         </h2>
@@ -124,7 +124,7 @@
                 <h2 style="color: red; font-size: 15px; font-weight: 500;">Công việc đã hoàn thành</h2>
               </div>
 
-              <div style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); margin-top: 10px; padding: 12px; border-radius: 10px; background-color: #C4D0EB">
+              <div style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); margin-top: 10px; border-radius: 10px; ">
                           <%
                             if (taskWithCategoryListCompleted == null || taskWithCategoryListCompleted.isEmpty()) {
                           %>
@@ -148,7 +148,7 @@
                                     priorityColor = "#dadada";
                                   }
                           %>
-                            <div class="task-card" data-task-id="<%= task.task_id != null ? task.task_id : "" %>">
+                            <div class="task-card" data-task-id="<%= task.task_id != null ? task.task_id : "" %>" onclick="navigateTask('<%= task.task_id %>')">
                               <h2 style="font-size: 18px; font-weight: 500; line-height: 12px;">
                                 <%= task.title != null ? task.title : "N/A" %>
                               </h2>
@@ -185,6 +185,11 @@
   </div>
 
 <script>
+    const contextPath = '<%= request.getContextPath() %>';
+    function navigateTask(taskId) {
+        window.location.href = contextPath + '/MyTask?editTaskId=' + encodeURIComponent(taskId);
+    }
+
     const completed = <%= stats.getCompletedPercent() %>;
     const inProgress = <%= stats.getInProgressPercent() %>;
     const notStarted = <%= stats.getNotStartedPercent() %>;

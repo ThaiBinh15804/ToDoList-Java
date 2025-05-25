@@ -43,7 +43,7 @@
     </div>
 
      <div style=" display: flex; align-items: center; column-gap: 8px;">
-        <button onclick="openCategoryModal()" style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); display: flex; align-items: center; column-gap: 4px; padding: 8px 10px; border-radius: 12px; background-color: #fff; border: 1px solid #dadada; color: black; font-size: 15px; cursor:pointer; ">
+        <button onclick="openCategoryModal()" style="display: flex; align-items: center; column-gap: 4px; padding: 8px 10px; border-radius: 12px; background-color: #f2f2f2; border: 1px solid #dadada; color: black; font-size: 15px; cursor:pointer; ">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-bar-stacked-icon lucide-chart-bar-stacked"><path d="M11 13v4"/><path d="M15 5v4"/><path d="M3 3v16a2 2 0 0 0 2 2h16"/><rect x="7" y="13" width="9" height="4" rx="1"/><rect x="7" y="5" width="12" height="4" rx="1"/></svg>
 
                    Thể loại
@@ -58,80 +58,79 @@
      </div>
 </div>
 
-
-
-<div style="padding: 12px 8px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
-    <div style="grid-column: span 1;">
-        <div style=" display: flex; align-items: center;">
-            <div style="height: 10px; width: 10px; border-radius: 99px; background-color: #17A2B8"></div>
-            <span style="margin-left: 8px; font-weight: 500;">Chưa bắt đầu</span>
+<div style="padding: 24px; display: flex; flex-wrap: wrap; gap: 20px; border-radius: 20px; width: 100%; justify-content: center;">
+    <div style="flex: 1;">
+        <div style="display: flex; align-items: center; margin-bottom: 16px;">
+            <div style="height: 14px; width: 14px; border-radius: 50%; background: radial-gradient(circle, #ff6b6b, #e63946); box-shadow: 0 0 8px rgba(255, 107, 107, 0.4);"></div>
+            <span style="margin-left: 16px; font-size: 20px; font-weight: 700; color: #1a2a44; text-transform: uppercase; letter-spacing: 1.5px;">Chưa bắt đầu</span>
         </div>
-        <div id="chua-bat-dau-tasks" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); margin-top: 10px; padding: 12px; border-radius: 10px; background-color: #C4D0EB">
-              <%
-                      boolean found = false;
-                      for (TaskWithCategory taskWithCategory : taskWithCategoryList) {
-                              Task task = taskWithCategory.task;
-                              String category_name = taskWithCategory.category_name;
-                               String priority = task.priority;
-                               String priorityColor;
+        <div id="chua-bat-dau-tasks" style="box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); margin-top: 16px; padding: 20px; border-radius: 15px; background: linear-gradient(145deg, #f8e1e1, #ffd1d1);">
+            <%
+                    boolean found = false;
+                    for (TaskWithCategory taskWithCategory : taskWithCategoryList) {
+                            Task task = taskWithCategory.task;
+                            String category_name = taskWithCategory.category_name;
+                            String priority = task.priority;
+                            String priorityColor;
 
-                               if ("Cao".equals(priority)) {
-                                       priorityColor = "#db4c40";
-                                   } else if ("Trung bình".equals(priority)) {
-                                       priorityColor = "#e9c46a";
-                                   } else if ("Thấp".equals(priority)) {
-                                       priorityColor = "#10b981";
-                                   } else {
-                                       priorityColor = "#dadada";
-                                   }
+                            if ("Cao".equals(priority)) {
+                                    priorityColor = "#ff4757";
+                                } else if ("Trung bình".equals(priority)) {
+                                    priorityColor = "#ffa502";
+                                } else if ("Thấp".equals(priority)) {
+                                    priorityColor = "#2ed573";
+                                } else {
+                                    priorityColor = "#ced6e0";
+                                }
 
-                              if ("Chưa bắt đầu".equals(task.status)) {
-                                    found = true;
-              %>
-                              <div class="task-card" data-task-id="<%= task.task_id %>" onclick="openTaskModal(this)">
-                                <h2 style="font-size: 18px; font-weight: 500; line-height: 12px;">
+                            if ("Chưa bắt đầu".equals(task.status)) {
+                                  found = true;
+            %>
+                            <div class="task-card" data-task-id="<%= task.task_id %>" style="background: #ffffff; padding: 18px; border-radius: 12px; margin-bottom: 18px; transition: all 0.4s ease; border: 2px solid #f1f1f1; overflow: hidden; position: relative;" onmouseover="this.style.transform='translateY(-8px) scale(1.03)'; this.style.boxShadow='0 12px 24px rgba(0, 0, 0, 0.2)';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 8px 16px rgba(0, 0, 0, 0.1)';">
+                                <div style="position: absolute; top: 0; left: 0; width: 5px; height: 100%; background: <%= priorityColor %>;"></div>
+                                <h2 style="font-size: 20px; font-weight: 700; color: #1a2a44; margin-bottom: 12px; line-height: 1.4; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);">
                                     <%= task.title %>
                                 </h2>
-                                <p style="font-size: 16px; color: #535353">
+                                <p style="font-size: 15px; color: #4a5e77; margin-bottom: 14px; line-height: 1.6; background: #f9f9f9; padding: 10px; border-radius: 8px; border-left: 4px solid <%= priorityColor %>;">
                                     <%= task.description %>
                                 </p>
-                                <div style="font-size: 15px; color: #535353; display: flex; align-items:center; column-gap: 4px;">
-                                   <span>
+                                <div style="font-size: 15px; color: #4a5e77; margin-bottom: 14px; display: flex; align-items: center; column-gap: 8px; background: #fff; padding: 8px; border-radius: 8px; border: 1px dashed #e0e0e0;">
+                                   <span style="font-weight: 600;">
                                         Thời gian bắt đầu:
                                    </span>
-                                   <span style="font-weight: 500; display: block">
+                                   <span style="font-weight: 700; color: #1a2a44;">
                                         <%= task.start_time != null ? task.start_time.format(formatter) : "N/A" %>
                                    </span>
                                 </div>
-                                <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
-                                    <div style="padding: 4px 0; font-size: 14px; border-radius: 8px; color: black; display: flex; align-items: center; column-gap: 6px">
-                                           <strong>Mức ưu tiên:</strong>
-                                           <div style="padding: 4px 8px; background-color: <%= priorityColor %>; color: black; border-radius: 12px; font-weight: 500; color: white;">
+                                <div style="margin-top: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                                    <div style="padding: 8px 0; font-size: 15px; color: #1a2a44; display: flex; align-items: center; column-gap: 10px;">
+                                           <strong style="font-weight: 700;">Mức ưu tiên:</strong>
+                                           <div style="padding: 10px 16px; background: linear-gradient(90deg, <%= priorityColor %>, darken(<%= priorityColor %>, 15%)); color: #fff; border-radius: 20px; font-weight: 700; text-transform: capitalize; box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);">
                                                 <%= task.priority %>
                                            </div>
                                     </div>
-                                    <span class="category-name" style=" padding: 4px 12px 6px; font-size: 14px; border-radius: 12px; color: #f2f2f2; background-color: #0077b6">
+                                    <span class="category-name" style="padding: 10px 16px; font-size: 15px; border-radius: 20px; color: #fff; background: linear-gradient(90deg, #6b48ff, #4a2cb3); font-weight: 700; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);">
                                         <%= category_name %>
                                     </span>
                                 </div>
-                              </div>
-              <%
+                            </div>
+            <%
                          }
                   }
                   if (!found) {
                   %>
-                      <p style="text-align: center; color: #283618; font-size: 15px;">Không có công việc</p>
+                      <p style="text-align: center; color: #7f8c8d; font-size: 17px; padding: 18px 0; font-style: italic; background: #f9f9f9; border-radius: 8px; border: 1px dashed #e0e0e0;">Không có công việc</p>
                   <%
                       }
               %>
         </div>
     </div>
-    <div style="grid-column: span 1;">
-            <div style=" display: flex; align-items: center;">
-                <div style="height: 10px; width: 10px; border-radius: 99px; background-color: #ffc107"></div>
-                <span style="margin-left: 8px; font-weight: 500;">Đang thực hiện</span>
+    <div style="flex: 1;">
+            <div style="display: flex; align-items: center; margin-bottom: 16px;">
+                <div style="height: 14px; width: 14px; border-radius: 50%; background: radial-gradient(circle, #ff9f43, #f08c00); box-shadow: 0 0 8px rgba(255, 159, 67, 0.4);"></div>
+                <span style="margin-left: 16px; font-size: 20px; font-weight: 700; color: #1a2a44; text-transform: uppercase; letter-spacing: 1.5px;">Đang thực hiện</span>
             </div>
-           <div id="dang-thuc-hien-tasks" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); margin-top: 10px; padding: 12px; border-radius: 10px; background-color: #fee440">
+           <div id="dang-thuc-hien-tasks" style="box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); margin-top: 16px; padding: 20px; border-radius: 15px; background: linear-gradient(145deg, #ffe8cc, #ffdab9);">
                <%
                    boolean found2 = false;
                    if (taskWithCategoryList != null) {
@@ -139,42 +138,45 @@
                            Task task = taskWithCategory.task;
                            String category_name = taskWithCategory.category_name;
                            String priority = task.priority;
-                                                          String priorityColor;
+                           String priorityColor;
 
-                                                          if ("Cao".equals(priority)) {
-                                                                  priorityColor = "#db4c40";
-                                                              } else if ("Trung bình".equals(priority)) {
-                                                                  priorityColor = "#e9c46a";
-                                                              } else if ("Thấp".equals(priority)) {
-                                                                  priorityColor = "#10b981";
-                                                              } else {
-                                                                  priorityColor = "#dadada";
-                                                              }
+                           if ("Cao".equals(priority)) {
+                                   priorityColor = "#ff4757";
+                               } else if ("Trung bình".equals(priority)) {
+                                   priorityColor = "#ffa502";
+                               } else if ("Thấp".equals(priority)) {
+                                   priorityColor = "#2ed573";
+                               } else {
+                                   priorityColor = "#ced6e0";
+                               }
 
                            if ("Đang thực hiện".equals(task.status)) {
                                found2 = true;
                %>
-                               <div class="task-card" data-task-id="<%= task.task_id %>" onclick="openTaskModal(this)">
-                                   <h2 style="font-size: 18px; font-weight: 500; line-height: 12px;">
+                               <div class="task-card" data-task-id="<%= task.task_id %>" style="background: #ffffff; padding: 18px; border-radius: 12px; margin-bottom: 18px; transition: all 0.4s ease; border: 2px solid #f1f1f1; overflow: hidden; position: relative;" onmouseover="this.style.transform='translateY(-8px) scale(1.03)'; this.style.boxShadow='0 12px 24px rgba(0, 0, 0, 0.2)';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 8px 16px rgba(0, 0, 0, 0.1)';">
+                                   <div style="position: absolute; top: 0; left: 0; width: 5px; height: 100%; background: <%= priorityColor %>;"></div>
+                                   <h2 style="font-size: 20px; font-weight: 700; color: #1a2a44; margin-bottom: 12px; line-height: 1.4; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);">
                                        <%= task.title %>
                                    </h2>
-                                   <p style="font-size: 16px; color: #535353">
+                                   <p style="font-size: 15px; color: #4a5e77; margin-bottom: 14px; line-height: 1.6; background: #f9f9f9; padding: 10px; border-radius: 8px; border-left: 4px solid <%= priorityColor %>;">
                                        <%= task.description %>
                                    </p>
-                                   <div style="font-size: 15px; color: #535353; display: flex; align-items:center; column-gap: 4px;">
-                                       <span>Thời gian bắt đầu:</span>
-                                       <span style="font-weight: 500; display: block">
+                                   <div style="font-size: 15px; color: #4a5e77; margin-bottom: 14px; display: flex; align-items: center; column-gap: 8px; background: #fff; padding: 8px; border-radius: 8px; border: 1px dashed #e0e0e0;">
+                                       <span style="font-weight: 600;">
+                                            Thời gian bắt đầu:
+                                       </span>
+                                       <span style="font-weight: 700; color: #1a2a44;">
                                            <%= task.start_time != null ? task.start_time.format(formatter) : "N/A" %>
                                        </span>
                                    </div>
-                                   <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
-                                       <div style="padding: 4px 0; font-size: 14px; border-radius: 8px; color: black; display: flex; align-items: center; column-gap: 6px">
-                                           <strong>Mức ưu tiên:</strong>
-                                           <div style="padding: 4px 8px; background-color: <%= priorityColor %>; color: black; border-radius: 12px; font-weight: 500; color: white;">
+                                   <div style="margin-top: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                                       <div style="padding: 8px 0; font-size: 15px; color: #1a2a44; display: flex; align-items: center; column-gap: 10px;">
+                                           <strong style="font-weight: 700;">Mức ưu tiên:</strong>
+                                           <div style="padding: 10px 16px; background: linear-gradient(90deg, <%= priorityColor %>, darken(<%= priorityColor %>, 15%)); color: #fff; border-radius: 20px; font-weight: 700; text-transform: capitalize; box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);">
                                                 <%= task.priority %>
                                            </div>
                                        </div>
-                                       <span class="category-name" style="padding: 4px 12px 6px; font-size: 14px; border-radius: 12px; color: #f2f2f2; background-color: #0077b6">
+                                       <span class="category-name" style="padding: 10px 16px; font-size: 15px; border-radius: 20px; color: #fff; background: linear-gradient(90deg, #6b48ff, #4a2cb3); font-weight: 700; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);">
                                            <%= category_name %>
                                        </span>
                                    </div>
@@ -185,18 +187,18 @@
                    }
                    if (!found2) {
                %>
-                       <p style="text-align: center; color: #283618; font-size: 15px;">Không có công việc</p>
+                       <p style="text-align: center; color: #7f8c8d; font-size: 17px; padding: 18px 0; font-style: italic; background: #f9f9f9; border-radius: 8px; border: 1px dashed #e0e0e0;">Không có công việc</p>
                <%
                    }
                %>
            </div>
     </div>
-    <div style="grid-column: span 1;">
-            <div style=" display: flex; align-items: center;">
-                <div style="height: 10px; width: 10px; border-radius: 99px; background-color: #8bc34a"></div>
-                <span style="margin-left: 8px; font-weight: 500;">Hoàn thành</span>
+    <div style="flex: 1;">
+            <div style="display: flex; align-items: center; margin-bottom: 16px;">
+                <div style="height: 14px; width: 14px; border-radius: 50%; background: radial-gradient(circle, #4caf50, #388e3c); box-shadow: 0 0 8px rgba(76, 175, 80, 0.4);"></div>
+                <span style="margin-left: 16px; font-size: 20px; font-weight: 700; color: #1a2a44; text-transform: uppercase; letter-spacing: 1.5px;">Hoàn thành</span>
             </div>
-            <div id="hoan-thanh-tasks" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);margin-top: 10px; padding: 12px; border-radius: 10px; background-color: #80ed99">
+            <div id="hoan-thanh-tasks" style="box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); margin-top: 16px; padding: 20px; border-radius: 15px; background: linear-gradient(145deg, #e0f2e9, #c8e6d0);">
                   <%
                            boolean found3 = false;
                            for (TaskWithCategory taskWithCategory : taskWithCategoryList) {
@@ -204,47 +206,48 @@
                                 String category_name = taskWithCategory.category_name;
 
                                 String priority = task.priority;
-                                                               String priorityColor;
+                                String priorityColor;
 
-                                                               if ("Cao".equals(priority)) {
-                                                                       priorityColor = "#db4c40";
-                                                                   } else if ("Trung bình".equals(priority)) {
-                                                                       priorityColor = "#e9c46a";
-                                                                   } else if ("Thấp".equals(priority)) {
-                                                                       priorityColor = "#10b981";
-                                                                   } else {
-                                                                       priorityColor = "#dadada";
-                                                                   }
+                                if ("Cao".equals(priority)) {
+                                        priorityColor = "#ff4757";
+                                    } else if ("Trung bình".equals(priority)) {
+                                        priorityColor = "#ffa502";
+                                    } else if ("Thấp".equals(priority)) {
+                                        priorityColor = "#2ed573";
+                                    } else {
+                                        priorityColor = "#ced6e0";
+                                    }
 
                                 if ("Hoàn thành".equals(task.status)) {
                                     found3 = true;
                   %>
-                                  <div class="task-card"  data-task-id="<%= task.task_id %>" onclick="openTaskModal(this)">
-                                        <h2 style="font-size: 18px; font-weight: 500; line-height: 12px;">
-                                            <%= task.title %>
-                                        </h2>
-                                        <p style="font-size: 16px; color: #535353">
-                                            <%= task.description %>
-                                        </p>
-                                       <div style="font-size: 15px; color: #535353; display: flex; align-items:center; column-gap: 4px;">
-                                           <span>
-                                                 Thời gian bắt đầu:
-                                           </span>
-                                           <span style="font-weight: 500; display: block">
-                                                 <%= task.start_time != null ? task.start_time.format(formatter) : "N/A" %>
-                                           </span>
+                                  <div class="task-card" data-task-id="<%= task.task_id %>" style="background: #ffffff; padding: 18px; border-radius: 12px; margin-bottom: 18px; transition: all 0.4s ease; border: 2px solid #f1f1f1; overflow: hidden; position: relative;" onmouseover="this.style.transform='translateY(-8px) scale(1.03)'; this.style.boxShadow='0 12px 24px rgba(0, 0, 0, 0.2)';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 8px 16px rgba(0, 0, 0, 0.1)';">
+                                      <div style="position: absolute; top: 0; left: 0; width: 5px; height: 100%; background: <%= priorityColor %>;"></div>
+                                      <h2 style="font-size: 20px; font-weight: 700; color: #1a2a44; margin-bottom: 12px; line-height: 1.4; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);">
+                                          <%= task.title %>
+                                      </h2>
+                                      <p style="font-size: 15px; color: #4a5e77; margin-bottom: 14px; line-height: 1.6; background: #f9f9f9; padding: 10px; border-radius: 8px; border-left: 4px solid <%= priorityColor %>;">
+                                          <%= task.description %>
+                                      </p>
+                                     <div style="font-size: 15px; color: #4a5e77; margin-bottom: 14px; display: flex; align-items: center; column-gap: 8px; background: #fff; padding: 8px; border-radius: 8px; border: 1px dashed #e0e0e0;">
+                                         <span style="font-weight: 600;">
+                                               Thời gian bắt đầu:
+                                         </span>
+                                         <span style="font-weight: 700; color: #1a2a44;">
+                                               <%= task.start_time != null ? task.start_time.format(formatter) : "N/A" %>
+                                         </span>
+                                    </div>
+                                     <div style="margin-top: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                                        <div style="padding: 8px 0; font-size: 15px; color: #1a2a44; display: flex; align-items: center; column-gap: 10px;">
+                                               <strong style="font-weight: 700;">Mức ưu tiên:</strong>
+                                      <div style="padding: 10px 16px; background: linear-gradient(90deg, <%= priorityColor %>, darken(<%= priorityColor %>, 15%)); color: #fff; border-radius: 20px; font-weight: 700; text-transform: capitalize; box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);">
+                                                                                      <%= task.priority %>
                                       </div>
-                                       <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
-                                                                          <div style="padding: 4px 0; font-size: 14px; border-radius: 8px; color: black; display: flex; align-items: center; column-gap: 6px">
-                                                                                 <strong>Mức ưu tiên:</strong>
-                                        <div style="padding: 4px 8px; background-color: <%= priorityColor %>; color: black; border-radius: 12px; font-weight: 500; color: white;">
-                                                                                        <%= task.priority %>
                                         </div>
-                                                                          </div>
-                                                                          <span class="category-name" style=" padding: 4px 12px; font-size: 14px; border-radius: 12px; color: #f2f2f2; background-color: #0077b6">
-                                                                              <%= category_name %>
-                                                                          </span>
-                                                                      </div>
+                                        <span class="category-name" style="padding: 10px 16px; font-size: 15px; border-radius: 20px; color: #fff; background: linear-gradient(90deg, #6b48ff, #4a2cb3); font-weight: 700; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);">
+                                                                            <%= category_name %>
+                                                                        </span>
+                                                                    </div>
                                 </div>
                   <%
                                              }
@@ -252,7 +255,7 @@
                                      }
                                      if (!found3) {
                                  %>
-                                          <p style="text-align: center; color: #283618; font-size: 15px;">Không có công việc</p>
+                                          <p style="text-align: center; color: #7f8c8d; font-size: 17px; padding: 18px 0; font-style: italic; background: #f9f9f9; border-radius: 8px; border: 1px dashed #e0e0e0;">Không có công việc</p>
                                  <%
                                }
                    %>
@@ -617,7 +620,7 @@
        });
 
        function fetchAndRenderTasks() {
-         const fetchUrl = "<%= request.getContextPath() %>/GetTasksFilterAndSort"
+          fetchUrl = "<%= request.getContextPath() %>/GetTasksFilterAndSort"
           let body = {
               user_id: "<%= userId %>",
               categoryIds: selectedCategoryIds,
@@ -627,9 +630,6 @@
               fetchUrl = `/ToDoList/searchTasks`;
               body = { searchQuery: searchQuery };
           }
-
-          console.log(body);
-          console.log(fetchUrl);
 
          fetch(fetchUrl, {
            method: "POST",
@@ -1665,7 +1665,7 @@
              stopOnFocus: true // giữ toast khi người dùng rê chuột vào
            }).showToast()
            openCategoryModal()
-           name = ""
+           document.getElementById("new-category-name").value = "";
            document.getElementById("add-category-form").style.display = "none"
          })
      }

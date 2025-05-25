@@ -295,7 +295,8 @@
         <% } else { %>
             <div class="notification-dropdown">
                 <span class="triangle-2"></span>
-                <button class="icon-btn">
+                <button class="icon-btn" style="position: relative">
+                    <span id="notifyCount" style="background-color: red; width: 15px; height: 15px; border-radius: 99px; color: white; font-size: 11px; position: absolute; right: 1px; top: 1px;">0</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                          stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                          class="lucide lucide-bell-icon lucide-bell">
@@ -555,9 +556,9 @@
         // Display notifications from localStorage
         function displayNotifications() {
             try {
-                console.log('Displaying notifications');
+                const notifyCount = document.getElementById("notifyCount");
                 const notifications = JSON.parse(localStorage.getItem('notifications')) || [];
-                console.log('Notifications array:', notifications);
+                notifyCount.innerText = notifications.length;
                 const dropdown = document.getElementById('notificationDropdown');
                 if (!dropdown) {
                     console.error('notificationDropdown element not found');

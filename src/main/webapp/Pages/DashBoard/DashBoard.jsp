@@ -36,11 +36,11 @@
           <span style="font-size: 14px; color: #8d99ae">Hôm nay</span>
         </div>
 
-        <div style="box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); margin-top: 10px; border-radius: 10px;">
+        <div style=" margin-top: 10px; border-radius: 10px;">
                     <%
                       if (taskWithCategoryList == null || taskWithCategoryList.isEmpty()) {
                     %>
-                      <p style="text-align: center; color: #283618; font-size: 15px;">Không có công việc nào trong hôm nay</p>
+                      <p style="text-align: center; color: #283618; font-size: 15px; padding: 10px 0; display: block; color: red;">Không có công việc nào trong hôm nay</p>
                     <%
                       } else {
                         for (TaskWithCategory taskWithCategory : taskWithCategoryList) {
@@ -124,11 +124,11 @@
                 <h2 style="color: red; font-size: 15px; font-weight: 500;">Công việc đã hoàn thành</h2>
               </div>
 
-              <div style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); margin-top: 10px; border-radius: 10px; ">
+              <div style=" margin-top: 10px; border-radius: 10px; ">
                           <%
                             if (taskWithCategoryListCompleted == null || taskWithCategoryListCompleted.isEmpty()) {
                           %>
-                            <p style="text-align: center; color: #283618; font-size: 15px;">Không có công việc nào trong hôm nay</p>
+                            <p style="text-align: center; color: #283618; font-size: 15px; padding: 10px 0; color: red;">Không có công việc nào</p>
                           <%
                             } else {
                               for (TaskWithCategory taskWithCategory : taskWithCategoryListCompleted) {

@@ -566,7 +566,7 @@
 
                     if (startFormatted && info.event.start) {
                         startPicker.setDate(info.event.start, false, 'H:i, d/m/Y');
-                        document.getElementById('edit-task-start').dataset.isoDate = info.event.start.toISOString().slice(0, 19);
+                        document.getElementById('edit-task-start').dataset.isoDate = info.event.start.toISOString().slice(0, 16);
                     } else {
                         startPicker.clear();
                         document.getElementById('edit-task-start').dataset.isoDate = '';
@@ -574,7 +574,7 @@
 
                     if (endFormatted && info.event.end) {
                         endPicker.setDate(info.event.end, false, 'H:i, d/m/Y');
-                        document.getElementById('edit-task-end').dataset.isoDate = info.event.end.toISOString().slice(0, 19);
+                        document.getElementById('edit-task-end').dataset.isoDate = info.event.end.toISOString().slice(0, 16);
                     } else {
                         endPicker.clear();
                         document.getElementById('edit-task-end').dataset.isoDate = '';
@@ -637,7 +637,7 @@
                 defaultMinute: 0,
                 onChange: function(selectedDates, dateStr, instance) {
                     if (selectedDates.length > 0) {
-                        const isoDate = selectedDates[0].toISOString().slice(0, 19);
+                        const isoDate = selectedDates[0].toISOString().slice(0, 16);
                         instance.element.dataset.isoDate = isoDate;
                     } else {
                         instance.element.dataset.isoDate = '';
@@ -678,7 +678,7 @@
                 year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false
             });
             document.getElementById('create-task-start').value = startFormatted;
-            document.getElementById('create-task-start').dataset.isoDate = startDate.toISOString().slice(0, 19);
+            document.getElementById('create-task-start').dataset.isoDate = startDate.toISOString().slice(0, 16);
             document.getElementById('create-task-end').value = '';
             document.getElementById('create-task-end').dataset.isoDate = '';
             document.getElementById('create-task-title').value = '';
